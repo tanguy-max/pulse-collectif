@@ -75,12 +75,20 @@ export default async function BilansPage() {
                   {/* Vidéo */}
                   {video && (
                     <div className="px-4 pb-3">
-                      <video
-                        src={`/videos/${video.fileName}`}
-                        controls
-                        playsInline
-                        className="w-full rounded-xl bg-black aspect-video"
-                      />
+                      {video.fileName.startsWith("https://www.loom.com/embed/") ? (
+                        <iframe
+                          src={video.fileName}
+                          allowFullScreen
+                          className="w-full rounded-xl aspect-video"
+                        />
+                      ) : (
+                        <video
+                          src={`/videos/${video.fileName}`}
+                          controls
+                          playsInline
+                          className="w-full rounded-xl bg-black aspect-video"
+                        />
+                      )}
                     </div>
                   )}
 

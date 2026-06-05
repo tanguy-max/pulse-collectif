@@ -27,6 +27,27 @@ export async function POST(req: NextRequest) {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions)
   if (!session.userId) return NextResponse.json({ error: "Non authentifié" }, { status: 401 })
 
+  const contentType = req.headers.get("content-type") ?? ""
+
+  // Loom URL (JSON)
+  if (contentType.includes("application/json")) {
+    const { loomUrl, meteoId } = await req.json()
+    if (!loomUrl) return NextResponse.json({ error: "URL manquante" }, { status: 400 })
+
+    const video = await prisma.video.create({
+      data: {
+        userId: session.userId,
+        teamId: session.teamId,
+        meteoId: meteoId ?? null,
+        fileName: loomUrl,
+      },
+      include: { user: { select: { name: true, initials: true } } },
+    })
+
+    return NextResponse.json({ ok: true, video })
+  }
+
+  // Fichier uploadé (FormData)
   const formData = await req.formData()
   const blob = formData.get("video") as Blob | null
   const duration = parseInt(formData.get("duration") as string ?? "0", 10)
