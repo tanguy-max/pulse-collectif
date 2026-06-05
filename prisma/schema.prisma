@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_DIRECT")
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  joinCode  String   @unique
+  createdAt DateTime @default(now())
+
+  users       User[]
+  meteos      Meteo[]
+  gratitudes  Gratitude[]
+  videos      Video[]
+  leadActions LeadAction[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  initials  String
+  role      Role     @default(MEMBER)
+  teamId    String
+  createdAt DateTime @default(now())
+
+  team               Team         @relation(fields: [teamId], references: [id])
+  meteos             Meteo[]
+  sentGratitudes     Gratitude[]  @relation("SentGratitudes")
+  receivedGratitudes Gratitude[]  @relation("ReceivedGratitudes")
+  videos             Video[]
+  actionsAsLead      LeadAction[] @relation("LeadActions")
+  actionsAsMember    LeadAction[] @relation("MemberActions")
+}
+
+model Video {
+  id        String   @id @default(cuid())
+  userId    String
+  teamId    String
+  meteoId   String?
+  fileName  String
+  duration  Int?
+  createdAt DateTime @default(now())
+
+  user  User   @relation(fields: [userId], references: [id])
+  team  Team   @relation(fields: [teamId], references: [id])
+  meteo Meteo? @relation(fields: [meteoId], references: [id])
+}
+
+model Meteo {
+  id               String    @id @default(cuid())
+  userId           String
+  teamId           String
+  mood             Mood
+  contextText      String?
+  contextAudience  Audience  @default(TEAM)
+  blockerText      String?
+  blockerAudience  Audience  @default(TEAM)
+  weekSummary      String?
+  weekHighlight    String?
+  createdAt        DateTime  @default(now())
+
+  user   User    @relation(fields: [userId], references: [id])
+  team   Team    @relation(fields: [teamId], references: [id])
+  videos Video[]
+}
+
+model Gratitude {
+  id         String   @id @default(cuid())
+  fromUserId String
+  toUserId   String?
+  teamId     String
+  tags       String
+  message    String?
+  createdAt  DateTime @default(now())
+
+  fromUser User  @relation("SentGratitudes", fields: [fromUserId], references: [id])
+  toUser   User? @relation("ReceivedGratitudes", fields: [toUserId], references: [id])
+  team     Team  @relation(fields: [teamId], references: [id])
+}
+
+model LeadAction {
+  id        String   @id @default(cuid())
+  leadId    String
+  memberId  String
+  teamId    String
+  actionKey String
+  createdAt DateTime @default(now())
+
+  lead   User @relation("LeadActions",  fields: [leadId],   references: [id])
+  member User @relation("MemberActions", fields: [memberId], references: [id])
+  team   Team @relation(fields: [teamId], references: [id])
+
+  @@unique([leadId, memberId, actionKey])
+}
+
+enum Role {
+  MEMBER
+  LEAD
+}
+
+enum Mood {
+  SUN
+  CLOUD
+  RAIN
+  STORM
+  FOG
+}
+
+enum Audience {
+  TEAM
+  LEAD
+  PRIVATE
+}
