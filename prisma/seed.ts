@@ -1,7 +1,11 @@
 import "dotenv/config"
 import { PrismaClient } from "../app/generated/prisma/client"
+import { PrismaPg } from "@prisma/adapter-pg"
+import { Pool } from "pg"
 
-const prisma = new PrismaClient()
+const pool = new Pool({ connectionString: process.env.DATABASE_URL_DIRECT })
+const adapter = new PrismaPg(pool)
+const prisma = new PrismaClient({ adapter })
 
 async function main() {
   console.log("🌱 Seeding Treely…")
@@ -29,4 +33,4 @@ async function main() {
 
 main()
   .catch(console.error)
-  .finally(() => prisma.$disconnect())
+  .finally(() => { pool.end(); prisma.$disconnect() })
