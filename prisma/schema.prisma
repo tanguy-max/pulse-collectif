@@ -26,8 +26,9 @@ model User {
   initials    String
   role        Role     @default(MEMBER)
   teamId      String
-  slackUserId String?  @unique
-  createdAt   DateTime @default(now())
+  slackUserId    String?  @unique
+  slackConvState String?
+  createdAt      DateTime @default(now())
 
   team               Team         @relation(fields: [teamId], references: [id])
   meteos             Meteo[]

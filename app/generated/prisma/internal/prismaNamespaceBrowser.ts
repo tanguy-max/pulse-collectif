@@ -92,6 +92,7 @@ export const UserScalarFieldEnum = {
   role: 'role',
   teamId: 'teamId',
   slackUserId: 'slackUserId',
+  slackConvState: 'slackConvState',
   createdAt: 'createdAt'
 } as const
 

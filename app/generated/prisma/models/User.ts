@@ -31,6 +31,7 @@ export type UserMinAggregateOutputType = {
   role: $Enums.Role | null
   teamId: string | null
   slackUserId: string | null
+  slackConvState: string | null
   createdAt: Date | null
 }
 
@@ -41,6 +42,7 @@ export type UserMaxAggregateOutputType = {
   role: $Enums.Role | null
   teamId: string | null
   slackUserId: string | null
+  slackConvState: string | null
   createdAt: Date | null
 }
 
@@ -51,6 +53,7 @@ export type UserCountAggregateOutputType = {
   role: number
   teamId: number
   slackUserId: number
+  slackConvState: number
   createdAt: number
   _all: number
 }
@@ -63,6 +66,7 @@ export type UserMinAggregateInputType = {
   role?: true
   teamId?: true
   slackUserId?: true
+  slackConvState?: true
   createdAt?: true
 }
 
@@ -73,6 +77,7 @@ export type UserMaxAggregateInputType = {
   role?: true
   teamId?: true
   slackUserId?: true
+  slackConvState?: true
   createdAt?: true
 }
 
@@ -83,6 +88,7 @@ export type UserCountAggregateInputType = {
   role?: true
   teamId?: true
   slackUserId?: true
+  slackConvState?: true
   createdAt?: true
   _all?: true
 }
@@ -166,6 +172,7 @@ export type UserGroupByOutputType = {
   role: $Enums.Role
   teamId: string
   slackUserId: string | null
+  slackConvState: string | null
   createdAt: Date
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
@@ -197,6 +204,7 @@ export type UserWhereInput = {
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   teamId?: Prisma.StringFilter<"User"> | string
   slackUserId?: Prisma.StringNullableFilter<"User"> | string | null
+  slackConvState?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
   meteos?: Prisma.MeteoListRelationFilter
@@ -214,6 +222,7 @@ export type UserOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   slackUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  slackConvState?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   team?: Prisma.TeamOrderByWithRelationInput
   meteos?: Prisma.MeteoOrderByRelationAggregateInput
@@ -234,6 +243,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   initials?: Prisma.StringFilter<"User"> | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   teamId?: Prisma.StringFilter<"User"> | string
+  slackConvState?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
   meteos?: Prisma.MeteoListRelationFilter
@@ -251,6 +261,7 @@ export type UserOrderByWithAggregationInput = {
   role?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   slackUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  slackConvState?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -267,6 +278,7 @@ export type UserScalarWhereWithAggregatesInput = {
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   teamId?: Prisma.StringWithAggregatesFilter<"User"> | string
   slackUserId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  slackConvState?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
@@ -276,6 +288,7 @@ export type UserCreateInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
@@ -293,6 +306,7 @@ export type UserUncheckedCreateInput = {
   role?: $Enums.Role
   teamId: string
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
@@ -308,6 +322,7 @@ export type UserUpdateInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
@@ -325,6 +340,7 @@ export type UserUncheckedUpdateInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
@@ -341,6 +357,7 @@ export type UserCreateManyInput = {
   role?: $Enums.Role
   teamId: string
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
 }
 
@@ -350,6 +367,7 @@ export type UserUpdateManyMutationInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -360,6 +378,7 @@ export type UserUncheckedUpdateManyInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -380,6 +399,7 @@ export type UserCountOrderByAggregateInput = {
   role?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   slackUserId?: Prisma.SortOrder
+  slackConvState?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -390,6 +410,7 @@ export type UserMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   slackUserId?: Prisma.SortOrder
+  slackConvState?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -400,6 +421,7 @@ export type UserMinOrderByAggregateInput = {
   role?: Prisma.SortOrder
   teamId?: Prisma.SortOrder
   slackUserId?: Prisma.SortOrder
+  slackConvState?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -555,6 +577,7 @@ export type UserCreateWithoutTeamInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
@@ -570,6 +593,7 @@ export type UserUncheckedCreateWithoutTeamInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
@@ -615,6 +639,7 @@ export type UserScalarWhereInput = {
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   teamId?: Prisma.StringFilter<"User"> | string
   slackUserId?: Prisma.StringNullableFilter<"User"> | string | null
+  slackConvState?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
 
@@ -624,6 +649,7 @@ export type UserCreateWithoutVideosInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
@@ -640,6 +666,7 @@ export type UserUncheckedCreateWithoutVideosInput = {
   role?: $Enums.Role
   teamId: string
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
@@ -670,6 +697,7 @@ export type UserUpdateWithoutVideosInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
@@ -686,6 +714,7 @@ export type UserUncheckedUpdateWithoutVideosInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
@@ -700,6 +729,7 @@ export type UserCreateWithoutMeteosInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
@@ -716,6 +746,7 @@ export type UserUncheckedCreateWithoutMeteosInput = {
   role?: $Enums.Role
   teamId: string
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
@@ -746,6 +777,7 @@ export type UserUpdateWithoutMeteosInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
@@ -762,6 +794,7 @@ export type UserUncheckedUpdateWithoutMeteosInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
@@ -776,6 +809,7 @@ export type UserCreateWithoutSentGratitudesInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
@@ -792,6 +826,7 @@ export type UserUncheckedCreateWithoutSentGratitudesInput = {
   role?: $Enums.Role
   teamId: string
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
   receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
@@ -811,6 +846,7 @@ export type UserCreateWithoutReceivedGratitudesInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
@@ -827,6 +863,7 @@ export type UserUncheckedCreateWithoutReceivedGratitudesInput = {
   role?: $Enums.Role
   teamId: string
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
@@ -857,6 +894,7 @@ export type UserUpdateWithoutSentGratitudesInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
@@ -873,6 +911,7 @@ export type UserUncheckedUpdateWithoutSentGratitudesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
@@ -898,6 +937,7 @@ export type UserUpdateWithoutReceivedGratitudesInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
@@ -914,6 +954,7 @@ export type UserUncheckedUpdateWithoutReceivedGratitudesInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
@@ -928,6 +969,7 @@ export type UserCreateWithoutActionsAsLeadInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
@@ -944,6 +986,7 @@ export type UserUncheckedCreateWithoutActionsAsLeadInput = {
   role?: $Enums.Role
   teamId: string
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
@@ -963,6 +1006,7 @@ export type UserCreateWithoutActionsAsMemberInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
@@ -979,6 +1023,7 @@ export type UserUncheckedCreateWithoutActionsAsMemberInput = {
   role?: $Enums.Role
   teamId: string
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
@@ -1009,6 +1054,7 @@ export type UserUpdateWithoutActionsAsLeadInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
@@ -1025,6 +1071,7 @@ export type UserUncheckedUpdateWithoutActionsAsLeadInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
@@ -1050,6 +1097,7 @@ export type UserUpdateWithoutActionsAsMemberInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
@@ -1066,6 +1114,7 @@ export type UserUncheckedUpdateWithoutActionsAsMemberInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   teamId?: Prisma.StringFieldUpdateOperationsInput | string
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
@@ -1080,6 +1129,7 @@ export type UserCreateManyTeamInput = {
   initials: string
   role?: $Enums.Role
   slackUserId?: string | null
+  slackConvState?: string | null
   createdAt?: Date | string
 }
 
@@ -1089,6 +1139,7 @@ export type UserUpdateWithoutTeamInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
@@ -1104,6 +1155,7 @@ export type UserUncheckedUpdateWithoutTeamInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
@@ -1119,6 +1171,7 @@ export type UserUncheckedUpdateManyWithoutTeamInput = {
   initials?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1205,6 +1258,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   role?: boolean
   teamId?: boolean
   slackUserId?: boolean
+  slackConvState?: boolean
   createdAt?: boolean
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
   meteos?: boolean | Prisma.User$meteosArgs<ExtArgs>
@@ -1223,6 +1277,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   teamId?: boolean
   slackUserId?: boolean
+  slackConvState?: boolean
   createdAt?: boolean
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -1234,6 +1289,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   teamId?: boolean
   slackUserId?: boolean
+  slackConvState?: boolean
   createdAt?: boolean
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -1245,10 +1301,11 @@ export type UserSelectScalar = {
   role?: boolean
   teamId?: boolean
   slackUserId?: boolean
+  slackConvState?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "initials" | "role" | "teamId" | "slackUserId" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "initials" | "role" | "teamId" | "slackUserId" | "slackConvState" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
   meteos?: boolean | Prisma.User$meteosArgs<ExtArgs>
@@ -1284,6 +1341,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     role: $Enums.Role
     teamId: string
     slackUserId: string | null
+    slackConvState: string | null
     createdAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -1721,6 +1779,7 @@ export interface UserFieldRefs {
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly teamId: Prisma.FieldRef<"User", 'String'>
   readonly slackUserId: Prisma.FieldRef<"User", 'String'>
+  readonly slackConvState: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
