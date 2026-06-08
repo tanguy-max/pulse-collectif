@@ -4,6 +4,30 @@ import { cookies } from "next/headers"
 import { prisma } from "@/lib/prisma"
 import { sessionOptions, type SessionData } from "@/lib/session"
 
+const MOOD_LABELS: Record<string, string> = {
+  SUN:   "☀️ Au top",
+  CLOUD: "⛅ Correct",
+  RAIN:  "🌧️ Difficile",
+  STORM: "⛈️ Épuisé·e",
+  FOG:   "🌫️ Flou",
+}
+
+async function postToSlack(name: string, mood: string, contextText?: string | null, blockerText?: string | null) {
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL
+  if (!webhookUrl) return
+
+  const moodLabel = MOOD_LABELS[mood] ?? mood
+  const lines = [`*${name}* vient de partager sa météo : ${moodLabel}`]
+  if (contextText) lines.push(`> ${contextText}`)
+  if (blockerText) lines.push(`> 🚧 ${blockerText}`)
+
+  await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: lines.join("\n") }),
+  }).catch(() => {}) // ne pas bloquer si Slack est indisponible
+}
+
 function todayRange() {
   const now = new Date()
   const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0)
@@ -57,6 +81,11 @@ export async function POST(req: NextRequest) {
       blockerAudience: blockerAudience || "TEAM",
     },
   })
+
+  // Post Slack uniquement si le contexte est partagé avec l'équipe
+  const sharedContext = contextAudience === "TEAM" ? contextText : null
+  const sharedBlocker = blockerAudience === "TEAM" ? blockerText : null
+  postToSlack(session.userName, mood, sharedContext, sharedBlocker)
 
   return NextResponse.json({ ok: true, meteo })
 }
