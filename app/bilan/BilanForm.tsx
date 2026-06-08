@@ -9,6 +9,7 @@ const MOODS = [
   { value: "RAIN",  emoji: "🌧️", label: "Difficile" },
   { value: "STORM", emoji: "⛈️", label: "Épuisé·e" },
   { value: "FOG",   emoji: "🌫️", label: "Flou" },
+  { value: "ANGER", emoji: "😤",  label: "Mauvaise humeur" },
 ]
 
 const AUDIENCES = [

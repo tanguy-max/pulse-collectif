@@ -22,7 +22,8 @@ export const Mood = {
   CLOUD: 'CLOUD',
   RAIN: 'RAIN',
   STORM: 'STORM',
-  FOG: 'FOG'
+  FOG: 'FOG',
+  ANGER: 'ANGER'
 } as const
 
 export type Mood = (typeof Mood)[keyof typeof Mood]

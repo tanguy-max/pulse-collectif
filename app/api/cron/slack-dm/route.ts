@@ -4,11 +4,12 @@ import { prisma } from "@/lib/prisma"
 const MOOD_BLOCKS = {
   type: "actions",
   elements: [
-    { type: "button", text: { type: "plain_text", text: "☀️ Au top"    }, action_id: "meteo_SUN",   style: "primary" },
-    { type: "button", text: { type: "plain_text", text: "⛅ Correct"   }, action_id: "meteo_CLOUD" },
-    { type: "button", text: { type: "plain_text", text: "🌧️ Difficile" }, action_id: "meteo_RAIN"  },
-    { type: "button", text: { type: "plain_text", text: "⛈️ Épuisé·e" }, action_id: "meteo_STORM", style: "danger" },
-    { type: "button", text: { type: "plain_text", text: "🌫️ Flou"      }, action_id: "meteo_FOG"   },
+    { type: "button", text: { type: "plain_text", text: "☀️ Au top"          }, action_id: "meteo_SUN",   style: "primary" },
+    { type: "button", text: { type: "plain_text", text: "⛅ Correct"         }, action_id: "meteo_CLOUD" },
+    { type: "button", text: { type: "plain_text", text: "🌧️ Difficile"      }, action_id: "meteo_RAIN"  },
+    { type: "button", text: { type: "plain_text", text: "⛈️ Épuisé·e"       }, action_id: "meteo_STORM", style: "danger" },
+    { type: "button", text: { type: "plain_text", text: "🌫️ Flou"           }, action_id: "meteo_FOG"   },
+    { type: "button", text: { type: "plain_text", text: "😤 Mauvaise humeur" }, action_id: "meteo_ANGER", style: "danger" },
   ],
 }
 

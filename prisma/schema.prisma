@@ -111,6 +111,7 @@ enum Mood {
   RAIN
   STORM
   FOG
+  ANGER
 }
 
 enum Audience {

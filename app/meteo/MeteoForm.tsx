@@ -4,11 +4,12 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 
 const MOODS = [
-  { value: "SUN",   emoji: "☀️",  label: "Au top",    desc: "Énergie et clarté" },
-  { value: "CLOUD", emoji: "⛅",  label: "Correct",   desc: "Ça roule" },
-  { value: "RAIN",  emoji: "🌧️", label: "Difficile", desc: "C'est un peu dur" },
-  { value: "STORM", emoji: "⛈️", label: "Épuisé·e",  desc: "À bout" },
-  { value: "FOG",   emoji: "🌫️", label: "Flou",      desc: "Je ne sais pas trop" },
+  { value: "SUN",   emoji: "☀️",  label: "Au top",          desc: "Énergie et clarté" },
+  { value: "CLOUD", emoji: "⛅",  label: "Correct",          desc: "Ça roule" },
+  { value: "RAIN",  emoji: "🌧️", label: "Difficile",        desc: "C'est un peu dur" },
+  { value: "STORM", emoji: "⛈️", label: "Épuisé·e",         desc: "À bout" },
+  { value: "FOG",   emoji: "🌫️", label: "Flou",             desc: "Je ne sais pas trop" },
+  { value: "ANGER", emoji: "😤",  label: "Mauvaise humeur",  desc: "Ça ne va pas" },
 ]
 
 const AUDIENCES = [

@@ -10,6 +10,7 @@ const MOOD_LABELS: Record<string, string> = {
   RAIN:  "🌧️ Difficile",
   STORM: "⛈️ Épuisé·e",
   FOG:   "🌫️ Flou",
+  ANGER: "😤 Mauvaise humeur",
 }
 
 async function postToSlack(name: string, mood: string, contextText?: string | null, blockerText?: string | null) {
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
 
   if (!mood) return NextResponse.json({ error: "Humeur requise" }, { status: 400 })
 
-  const validMoods = ["SUN", "CLOUD", "RAIN", "STORM", "FOG"]
+  const validMoods = ["SUN", "CLOUD", "RAIN", "STORM", "FOG", "ANGER"]
   const validAudiences = ["TEAM", "LEAD", "PRIVATE"]
   if (!validMoods.includes(mood)) return NextResponse.json({ error: "Humeur invalide" }, { status: 400 })
   if (contextAudience && !validAudiences.includes(contextAudience)) {

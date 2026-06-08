@@ -7,6 +7,7 @@ const MOOD_LABELS: Record<string, string> = {
   RAIN:  "🌧️ Difficile",
   STORM: "⛈️ Épuisé·e",
   FOG:   "🌫️ Flou",
+  ANGER: "😤 Mauvaise humeur",
 }
 
 const AUDIENCE_OPTIONS = [
