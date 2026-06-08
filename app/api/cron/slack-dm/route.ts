@@ -12,7 +12,15 @@ const MOOD_BLOCKS = {
   ],
 }
 
+export async function GET(req: NextRequest) {
+  return handler(req)
+}
+
 export async function POST(req: NextRequest) {
+  return handler(req)
+}
+
+async function handler(req: NextRequest) {
   // Sécurité basique : vérifier le secret dans le header ou query param
   const secret = req.nextUrl.searchParams.get("secret") ?? req.headers.get("x-cron-secret")
   if (secret !== process.env.CRON_SECRET) {
