@@ -85,15 +85,19 @@ export async function POST(req: NextRequest) {
     const slackUserId = payload.user?.id
     const triggerId   = payload.trigger_id
 
-    // Ouvrir la modale en premier, AVANT toute requête DB
-    fetch("https://slack.com/api/views.open", {
+    // Ouvrir la modale — on attend la réponse Slack avant de retourner
+    const result = await fetch("https://slack.com/api/views.open", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ trigger_id: triggerId, view: buildModal(mood, slackUserId) }),
-    }).catch(() => {})
+    }).then(r => r.json()).catch(() => ({ ok: false }))
+
+    if (!result.ok) {
+      console.error("views.open error:", JSON.stringify(result))
+    }
 
     return new NextResponse("ok")
   }
