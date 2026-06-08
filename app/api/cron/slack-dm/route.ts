@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
 const MOOD_BLOCKS = {
@@ -12,10 +12,10 @@ const MOOD_BLOCKS = {
   ],
 }
 
-export async function POST(req: Request) {
-  // Sécurité basique : vérifier le secret cron
-  const { searchParams } = new URL(req.url)
-  if (searchParams.get("secret") !== process.env.CRON_SECRET) {
+export async function POST(req: NextRequest) {
+  // Sécurité basique : vérifier le secret dans le header ou query param
+  const secret = req.nextUrl.searchParams.get("secret") ?? req.headers.get("x-cron-secret")
+  if (secret !== process.env.CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
