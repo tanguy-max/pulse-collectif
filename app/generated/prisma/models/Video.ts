@@ -501,10 +501,6 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type VideoCreateNestedManyWithoutMeteoInput = {
   create?: Prisma.XOR<Prisma.VideoCreateWithoutMeteoInput, Prisma.VideoUncheckedCreateWithoutMeteoInput> | Prisma.VideoCreateWithoutMeteoInput[] | Prisma.VideoUncheckedCreateWithoutMeteoInput[]
   connectOrCreate?: Prisma.VideoCreateOrConnectWithoutMeteoInput | Prisma.VideoCreateOrConnectWithoutMeteoInput[]

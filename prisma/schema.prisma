@@ -21,12 +21,13 @@ model Team {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  initials  String
-  role      Role     @default(MEMBER)
-  teamId    String
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  name        String
+  initials    String
+  role        Role     @default(MEMBER)
+  teamId      String
+  slackUserId String?  @unique
+  createdAt   DateTime @default(now())
 
   team               Team         @relation(fields: [teamId], references: [id])
   meteos             Meteo[]
