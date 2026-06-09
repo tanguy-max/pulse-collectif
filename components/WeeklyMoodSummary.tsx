@@ -66,7 +66,7 @@ export default function WeeklyMoodSummary({ members, dayLabels }: Props) {
             {(["SUN","CLOUD","RAIN","STORM","FOG","ANGER"] as MoodKey[]).map((m) => (
               <span key={m} className="flex items-center gap-1 text-xs text-gray-400">
                 <MoodDot mood={m} />
-                {{ SUN: "Au top", CLOUD: "Correct", RAIN: "Difficile", STORM: "Mal dormi·e", FOG: "Stressé·e", ANGER: "Mauvaise humeur" }[m]}
+                {{ SUN: "Au top", CLOUD: "Correct", RAIN: "Difficile", STORM: "Mal dormi", FOG: "Stressé·e", ANGER: "Mauvaise humeur" }[m]}
               </span>
             ))}
           </div>

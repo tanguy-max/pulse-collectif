@@ -8,7 +8,7 @@ const MOOD_LABELS: Record<string, string> = {
   SUN:   "☀️ Au top",
   CLOUD: "⛅ Correct",
   RAIN:  "🌧️ Difficile",
-  STORM: "⛈️ Mal dormi·e",
+  STORM: "⛈️ Mal dormi",
   FOG:   "🌫️ Stressé·e",
   ANGER: "😤 Mauvaise humeur",
 }
