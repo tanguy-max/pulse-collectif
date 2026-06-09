@@ -18,6 +18,49 @@ const AUDIENCE_OPTIONS = [
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://pulse-collectif-production.up.railway.app"
 
+async function notifyLeads(
+  memberName: string,
+  mood: string,
+  teamId: string,
+  contextText: string | null,
+  contextAudience: string,
+  blockerText: string | null,
+  blockerAudience: string,
+) {
+  const botToken = process.env.SLACK_BOT_TOKEN
+  if (!botToken) return
+
+  const hasLeadContent =
+    (contextText && contextAudience === "LEAD") ||
+    (blockerText && blockerAudience === "LEAD")
+  if (!hasLeadContent) return
+
+  const leads = await prisma.user.findMany({
+    where: { teamId, role: "LEAD", slackUserId: { not: null } },
+  })
+
+  const lines = [`🎯 *Message pour les leads — ${memberName}* (${MOOD_LABELS[mood]})`]
+  if (contextText && contextAudience === "LEAD") lines.push(`> ${contextText}`)
+  if (blockerText  && blockerAudience === "LEAD") lines.push(`> 🚧 ${blockerText}`)
+  const text = lines.join("\n")
+
+  for (const lead of leads) {
+    if (lead.name === memberName) continue // pas de notif à soi-même
+    const openRes = await fetch("https://slack.com/api/conversations.open", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ users: lead.slackUserId }),
+    })
+    const { channel } = await openRes.json()
+    if (!channel?.id) continue
+    await fetch("https://slack.com/api/chat.postMessage", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ channel: channel.id, text }),
+    })
+  }
+}
+
 function buildModal(mood: string, slackUserId: string) {
   return {
     type: "modal",
@@ -162,6 +205,9 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({ text: lines.join("\n") }),
       }).catch(() => {})
     }
+
+    // DM aux leads si contenu partagé en "Lead"
+    await notifyLeads(user.name, mood, user.teamId, contextText, contextAudience, blockerText, blockerAudience)
 
     return NextResponse.json({
       response_action: "update",

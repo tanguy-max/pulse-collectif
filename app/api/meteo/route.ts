@@ -83,10 +83,44 @@ export async function POST(req: NextRequest) {
     },
   })
 
-  // Post Slack uniquement si le contexte est partagé avec l'équipe
+  // Post canal Slack si partagé équipe
   const sharedContext = contextAudience === "TEAM" ? contextText : null
   const sharedBlocker = blockerAudience === "TEAM" ? blockerText : null
   postToSlack(session.userName, mood, sharedContext, sharedBlocker)
+
+  // DM aux leads si contenu partagé en "Lead"
+  const hasLeadContent =
+    (contextText?.trim() && contextAudience === "LEAD") ||
+    (blockerText?.trim() && blockerAudience === "LEAD")
+
+  if (hasLeadContent) {
+    const botToken = process.env.SLACK_BOT_TOKEN
+    if (botToken) {
+      const leads = await prisma.user.findMany({
+        where: { teamId: session.teamId, role: "LEAD", slackUserId: { not: null } },
+      })
+      const lines = [`🎯 *Message pour les leads — ${session.userName}* (${MOOD_LABELS[mood]})`]
+      if (contextText?.trim() && contextAudience === "LEAD") lines.push(`> ${contextText.trim()}`)
+      if (blockerText?.trim() && blockerAudience === "LEAD") lines.push(`> 🚧 ${blockerText.trim()}`)
+      const text = lines.join("\n")
+
+      for (const lead of leads) {
+        if (lead.name === session.userName) continue
+        const openRes = await fetch("https://slack.com/api/conversations.open", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ users: lead.slackUserId }),
+        })
+        const { channel } = await openRes.json()
+        if (!channel?.id) continue
+        fetch("https://slack.com/api/chat.postMessage", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ channel: channel.id, text }),
+        }).catch(() => {})
+      }
+    }
+  }
 
   return NextResponse.json({ ok: true, meteo })
 }
