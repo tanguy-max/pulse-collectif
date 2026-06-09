@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
       data: {
         userId: user.id,
         teamId: user.teamId,
-        mood: finalState.mood,
+        mood: finalState.mood as "SUN" | "CLOUD" | "RAIN" | "STORM" | "FOG" | "ANGER",
         weekHighlight: finalState.highlightText ?? null,
         weekSummary: finalState.summaryText ?? null,
         contextAudience: "TEAM",

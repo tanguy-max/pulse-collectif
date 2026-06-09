@@ -32,7 +32,7 @@ async function saveBilan(user: { id: string; teamId: string; name: string }, sta
     data: {
       userId: user.id,
       teamId: user.teamId,
-      mood: state.mood as string,
+      mood: state.mood as "SUN" | "CLOUD" | "RAIN" | "STORM" | "FOG" | "ANGER",
       weekHighlight: state.highlightText ?? null,
       weekSummary: state.summaryText ?? null,
       contextAudience: "TEAM",
