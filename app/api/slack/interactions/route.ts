@@ -18,6 +18,68 @@ const AUDIENCE_OPTIONS = [
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://pulse-collectif-production.up.railway.app"
 
+const BILAN_LABELS: Record<string, string> = {
+  SUN: "☀️ Super semaine", CLOUD: "⛅ Correcte", RAIN: "🌧️ Difficile",
+  STORM: "⛈️ Mal dormi", FOG: "🌫️ Stressé·e", ANGER: "😤 Mauvaise humeur",
+}
+
+async function saveBilan(user: { id: string; teamId: string; name: string }, state: Record<string, string | null>) {
+  const weekStart = new Date()
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1)
+  weekStart.setHours(0, 0, 0, 0)
+
+  await prisma.meteo.create({
+    data: {
+      userId: user.id,
+      teamId: user.teamId,
+      mood: state.mood as string,
+      weekHighlight: state.highlightText ?? null,
+      weekSummary: state.summaryText ?? null,
+      contextAudience: "TEAM",
+      blockerAudience: "TEAM",
+    },
+  })
+
+  await prisma.user.update({ where: { id: user.id }, data: { slackConvState: null } })
+
+  // Post dans #1-standup
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL
+  if (webhookUrl) {
+    const lines = [`📋 *Bilan de ${user.name}* — ${BILAN_LABELS[state.mood as string]}`]
+    if (state.highlightText) lines.push(`> ✨ ${state.highlightText}`)
+    if (state.summaryText)   lines.push(`> 💡 ${state.summaryText}`)
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: lines.join("\n") }),
+    }).catch(() => {})
+  }
+
+  // Confirmation DM
+  const botToken = process.env.SLACK_BOT_TOKEN
+  if (botToken && user) {
+    const pulseUser = await prisma.user.findUnique({ where: { id: user.id } })
+    if (pulseUser?.slackUserId) {
+      const openRes = await fetch("https://slack.com/api/conversations.open", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ users: pulseUser.slackUserId }),
+      })
+      const { channel } = await openRes.json()
+      if (channel?.id) {
+        await fetch("https://slack.com/api/chat.postMessage", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            channel: channel.id,
+            text: `✅ Bilan enregistré ! Bonne fin de semaine ${user.name} 🌿\n📹 N'oublie pas ton clip vidéo dans #1-standup !`,
+          }),
+        })
+      }
+    }
+  }
+}
+
 async function notifyLeads(
   memberName: string,
   mood: string,
@@ -119,6 +181,90 @@ export async function POST(req: NextRequest) {
   if (!payloadStr) return new NextResponse("ok")
 
   const payload = JSON.parse(payloadStr)
+
+  // ── Clic bouton bilan → démarrer flux bilan ──────────────────────────────
+  if (payload.type === "block_actions" && payload.actions?.[0]?.action_id?.startsWith("bilan_")) {
+    const action      = payload.actions[0]
+    const mood        = action.action_id.replace("bilan_", "")
+    const slackUserId = payload.user?.id
+    const channel     = payload.channel?.id
+
+    const user = await prisma.user.findFirst({ where: { slackUserId } })
+    if (!user) return new NextResponse("ok")
+
+    const BILAN_LABELS: Record<string, string> = {
+      SUN: "☀️ Super semaine", CLOUD: "⛅ Correcte", RAIN: "🌧️ Difficile",
+      STORM: "⛈️ Mal dormi", FOG: "🌫️ Stressé·e", ANGER: "😤 Mauvaise humeur",
+    }
+
+    const newState = { type: "bilan", step: "BILAN_WAITING_HIGHLIGHT", mood, channel }
+    await prisma.user.update({ where: { id: user.id }, data: { slackConvState: JSON.stringify(newState) } })
+
+    const botToken = process.env.SLACK_BOT_TOKEN!
+    const openRes = await fetch("https://slack.com/api/conversations.open", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ users: slackUserId }),
+    })
+    const { channel: dmChannel } = await openRes.json()
+    if (dmChannel?.id) {
+      await fetch("https://slack.com/api/chat.postMessage", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          channel: dmChannel.id,
+          text: `${BILAN_LABELS[mood]} noté ! Un moment marquant cette semaine ? _(écris ici ou clique Passer)_`,
+          blocks: [{
+            type: "actions",
+            elements: [{ type: "button", text: { type: "plain_text", text: "Passer →" }, action_id: "skip_highlight" }],
+          }],
+        }),
+      })
+    }
+    return new NextResponse("ok")
+  }
+
+  // ── Passer moment marquant ────────────────────────────────────────────────
+  if (payload.type === "block_actions" && payload.actions?.[0]?.action_id === "skip_highlight") {
+    const slackUserId = payload.user?.id
+    const user = await prisma.user.findFirst({ where: { slackUserId } })
+    if (!user?.slackConvState) return new NextResponse("ok")
+    const state = JSON.parse(user.slackConvState)
+    const newState = { ...state, step: "BILAN_WAITING_SUMMARY", highlightText: null }
+    await prisma.user.update({ where: { id: user.id }, data: { slackConvState: JSON.stringify(newState) } })
+    const botToken = process.env.SLACK_BOT_TOKEN!
+    const openRes = await fetch("https://slack.com/api/conversations.open", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ users: slackUserId }),
+    })
+    const { channel: dmChannel } = await openRes.json()
+    if (dmChannel?.id) {
+      await fetch("https://slack.com/api/chat.postMessage", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          channel: dmChannel.id,
+          text: "Ce que tu emportes de cette semaine ? _(écris ici ou clique Passer)_",
+          blocks: [{
+            type: "actions",
+            elements: [{ type: "button", text: { type: "plain_text", text: "Passer →" }, action_id: "skip_summary" }],
+          }],
+        }),
+      })
+    }
+    return new NextResponse("ok")
+  }
+
+  // ── Passer ce que j'emporte → sauvegarder bilan ───────────────────────────
+  if (payload.type === "block_actions" && payload.actions?.[0]?.action_id === "skip_summary") {
+    const slackUserId = payload.user?.id
+    const user = await prisma.user.findFirst({ where: { slackUserId } })
+    if (!user?.slackConvState) return new NextResponse("ok")
+    const state = JSON.parse(user.slackConvState)
+    await saveBilan(user, { ...state, summaryText: null })
+    return new NextResponse("ok")
+  }
 
   // ── Clic bouton météo → ouvrir modale IMMÉDIATEMENT ──────────────────────
   if (payload.type === "block_actions") {

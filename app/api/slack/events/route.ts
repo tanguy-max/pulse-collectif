@@ -114,5 +114,58 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true })
   }
 
+  // ── BILAN_WAITING_HIGHLIGHT : moment marquant ────────────────────────────
+  if (state.step === "BILAN_WAITING_HIGHLIGHT") {
+    const newState = { ...state, step: "BILAN_WAITING_SUMMARY", highlightText: text }
+    await prisma.user.update({ where: { id: user.id }, data: { slackConvState: JSON.stringify(newState) } })
+    await sendDM(channel, `_"${text}"_ ✨\nCe que tu emportes de cette semaine ? _(écris ici ou clique Passer)_`, [{
+      type: "actions",
+      elements: [{ type: "button", text: { type: "plain_text", text: "Passer →" }, action_id: "skip_summary" }],
+    }])
+    return NextResponse.json({ ok: true })
+  }
+
+  // ── BILAN_WAITING_SUMMARY : ce que j'emporte ─────────────────────────────
+  if (state.step === "BILAN_WAITING_SUMMARY") {
+    const finalState = { ...state, summaryText: text }
+    await prisma.user.update({ where: { id: user.id }, data: { slackConvState: JSON.stringify(finalState) } })
+    // Import saveBilan logic inline
+    const weekStart = new Date()
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1)
+    weekStart.setHours(0, 0, 0, 0)
+
+    await prisma.meteo.create({
+      data: {
+        userId: user.id,
+        teamId: user.teamId,
+        mood: finalState.mood,
+        weekHighlight: finalState.highlightText ?? null,
+        weekSummary: finalState.summaryText ?? null,
+        contextAudience: "TEAM",
+        blockerAudience: "TEAM",
+      },
+    })
+    await prisma.user.update({ where: { id: user.id }, data: { slackConvState: null } })
+
+    const BILAN_LABELS: Record<string, string> = {
+      SUN: "☀️ Super semaine", CLOUD: "⛅ Correcte", RAIN: "🌧️ Difficile",
+      STORM: "⛈️ Mal dormi", FOG: "🌫️ Stressé·e", ANGER: "😤 Mauvaise humeur",
+    }
+    const webhookUrl = process.env.SLACK_WEBHOOK_URL
+    if (webhookUrl) {
+      const lines = [`📋 *Bilan de ${user.name}* — ${BILAN_LABELS[finalState.mood]}`]
+      if (finalState.highlightText) lines.push(`> ✨ ${finalState.highlightText}`)
+      if (finalState.summaryText)   lines.push(`> 💡 ${finalState.summaryText}`)
+      await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: lines.join("\n") }),
+      }).catch(() => {})
+    }
+
+    await sendDM(channel, `✅ Bilan enregistré ! Bonne fin de semaine ${user.name} 🌿\n📹 N'oublie pas ton clip vidéo dans #1-standup !`)
+    return NextResponse.json({ ok: true })
+  }
+
   return NextResponse.json({ ok: true })
 }
