@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
       const lines = [`*${user.name}* — ${MOOD_LABELS[mood]}`]
       if (contextText && contextAudience === "TEAM") lines.push(`> ${contextText}`)
       if (blockerText  && blockerAudience === "TEAM") lines.push(`> 🚧 ${blockerText}`)
-      fetch(webhookUrl, {
+      await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: lines.join("\n") }),
