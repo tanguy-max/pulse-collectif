@@ -63,7 +63,7 @@ async function saveBilan(user: { id: string; teamId: string; name: string }, sta
           headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
           body: JSON.stringify({
             channel: channel.id,
-            text: `${BILAN_LABELS[state.mood as string]} noté !\n📹 *Poste ton clip dans #1-standup* — raconte ta semaine en 1-2 min 🎥`,
+            text: `${BILAN_LABELS[state.mood as string]} noté ! 🎬\n📹 *Enregistre ton clip vidéo ici dans ce DM* (bouton 📷) — il sera automatiquement partagé dans #1-standup !`,
           }),
         })
       }

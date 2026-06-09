@@ -83,15 +83,36 @@ export async function POST(req: NextRequest) {
   if (payload.type !== "event_callback") return NextResponse.json({ ok: true })
 
   const event = payload.event
-  // Uniquement les messages DM entrants (pas les messages du bot)
-  if (event.type !== "message" || event.channel_type !== "im" || event.bot_id || event.subtype) {
+  if (event.type !== "message" || event.channel_type !== "im" || event.bot_id) {
     return NextResponse.json({ ok: true })
   }
 
   const slackUserId = event.user
   const channel     = event.channel
-  const text        = event.text?.trim()
-  if (!text) return NextResponse.json({ ok: true })
+
+  // ── Fichier vidéo dans le DM → repost dans standup ───────────────────────
+  const files: any[] = event.files ?? []
+  const videoFile = files.find((f: any) =>
+    f.mimetype?.startsWith("video/") || f.filetype === "mp4" || f.filetype === "webm" || f.filetype === "mov"
+  )
+
+  if (videoFile) {
+    const user = await prisma.user.findFirst({ where: { slackUserId } })
+    const webhookUrl = process.env.SLACK_WEBHOOK_URL
+    if (user && webhookUrl && videoFile.permalink) {
+      await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: `📹 *${user.name}* — bilan de semaine\n${videoFile.permalink}`,
+        }),
+      }).catch(() => {})
+    }
+    return NextResponse.json({ ok: true })
+  }
+
+  const text = event.text?.trim()
+  if (!text || event.subtype) return NextResponse.json({ ok: true })
 
   const user = await prisma.user.findFirst({ where: { slackUserId } })
   if (!user?.slackConvState) return NextResponse.json({ ok: true })
