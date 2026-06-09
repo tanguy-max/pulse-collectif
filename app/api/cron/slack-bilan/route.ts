@@ -4,12 +4,11 @@ import { prisma } from "@/lib/prisma"
 const MOOD_BLOCKS = {
   type: "actions",
   elements: [
-    { type: "button", text: { type: "plain_text", text: "☀️ Super semaine"   }, action_id: "bilan_SUN",   style: "primary" },
-    { type: "button", text: { type: "plain_text", text: "⛅ Correcte"        }, action_id: "bilan_CLOUD" },
-    { type: "button", text: { type: "plain_text", text: "🌧️ Difficile"      }, action_id: "bilan_RAIN"  },
-    { type: "button", text: { type: "plain_text", text: "⛈️ Mal dormi"      }, action_id: "bilan_STORM", style: "danger" },
-    { type: "button", text: { type: "plain_text", text: "🌫️ Stressé·e"     }, action_id: "bilan_FOG"   },
-    { type: "button", text: { type: "plain_text", text: "😤 Mauvaise humeur" }, action_id: "bilan_ANGER", style: "danger" },
+    { type: "button", text: { type: "plain_text", text: "🌟 Super"       }, action_id: "bilan_SUN",   style: "primary" },
+    { type: "button", text: { type: "plain_text", text: "👍 Normale"     }, action_id: "bilan_CLOUD" },
+    { type: "button", text: { type: "plain_text", text: "😐 Bof"         }, action_id: "bilan_FOG"   },
+    { type: "button", text: { type: "plain_text", text: "😰 Stressante"  }, action_id: "bilan_RAIN"  },
+    { type: "button", text: { type: "plain_text", text: "😴 Fatiguante"  }, action_id: "bilan_STORM", style: "danger" },
   ],
 }
 
@@ -26,18 +25,7 @@ async function handler(req: NextRequest) {
   const webhookUrl = process.env.SLACK_WEBHOOK_URL
   if (!botToken) return NextResponse.json({ error: "No bot token" }, { status: 500 })
 
-  // Message dans #1-standup pour les clips vidéo
-  if (webhookUrl) {
-    await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text: "📹 *Bilan de semaine — postez votre clip vidéo ici !*\nBouton caméra 📷 dans la barre de message · 1 à 2 min · aucune préparation\n_Vous recevez aussi un DM pour noter votre humeur de la semaine 👇_",
-      }),
-    }).catch(() => {})
-  }
-
-  // DMs individuels pour le bilan texte
+  // DMs individuels
   const users = await prisma.user.findMany({
     where: { slackUserId: { not: null } },
   })
@@ -45,7 +33,7 @@ async function handler(req: NextRequest) {
   const blocks = [
     {
       type: "section",
-      text: { type: "mrkdwn", text: "📋 *C'était comment cette semaine ?*\nClique sur ton humeur de fin de semaine :" },
+      text: { type: "mrkdwn", text: "📋 *Ta semaine, c'était comment ?*" },
     },
     MOOD_BLOCKS,
   ]

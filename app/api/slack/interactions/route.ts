@@ -19,8 +19,12 @@ const AUDIENCE_OPTIONS = [
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://pulse-collectif-production.up.railway.app"
 
 const BILAN_LABELS: Record<string, string> = {
-  SUN: "☀️ Super semaine", CLOUD: "⛅ Correcte", RAIN: "🌧️ Difficile",
-  STORM: "⛈️ Mal dormi", FOG: "🌫️ Stressé·e", ANGER: "😤 Mauvaise humeur",
+  SUN:   "🌟 Super",
+  CLOUD: "👍 Normale",
+  FOG:   "😐 Bof",
+  RAIN:  "😰 Stressante",
+  STORM: "😴 Fatiguante",
+  ANGER: "😤 Mauvaise humeur",
 }
 
 async function saveBilan(user: { id: string; teamId: string; name: string }, state: Record<string, string | null>) {
@@ -42,19 +46,6 @@ async function saveBilan(user: { id: string; teamId: string; name: string }, sta
 
   await prisma.user.update({ where: { id: user.id }, data: { slackConvState: null } })
 
-  // Post dans #1-standup
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL
-  if (webhookUrl) {
-    const lines = [`📋 *Bilan de ${user.name}* — ${BILAN_LABELS[state.mood as string]}`]
-    if (state.highlightText) lines.push(`> ✨ ${state.highlightText}`)
-    if (state.summaryText)   lines.push(`> 💡 ${state.summaryText}`)
-    await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: lines.join("\n") }),
-    }).catch(() => {})
-  }
-
   // Confirmation DM
   const botToken = process.env.SLACK_BOT_TOKEN
   if (botToken && user) {
@@ -72,7 +63,7 @@ async function saveBilan(user: { id: string; teamId: string; name: string }, sta
           headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
           body: JSON.stringify({
             channel: channel.id,
-            text: `✅ Noté !\n📹 *Enregistre ton clip vidéo dans #1-standup* pour partager ta semaine avec l'équipe 👆`,
+            text: `${BILAN_LABELS[state.mood as string]} noté !\n📹 *Poste ton clip dans #1-standup* — raconte ta semaine en 1-2 min 🎥`,
           }),
         })
       }
