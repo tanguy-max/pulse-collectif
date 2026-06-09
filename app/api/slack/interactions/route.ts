@@ -72,7 +72,7 @@ async function saveBilan(user: { id: string; teamId: string; name: string }, sta
           headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
           body: JSON.stringify({
             channel: channel.id,
-            text: `✅ Bilan enregistré ! Bonne fin de semaine ${user.name} 🌿\n📹 N'oublie pas ton clip vidéo dans #1-standup !`,
+            text: `✅ Noté !\n📹 *Enregistre ton clip vidéo dans #1-standup* pour partager ta semaine avec l'équipe 👆`,
           }),
         })
       }
@@ -197,72 +197,8 @@ export async function POST(req: NextRequest) {
       STORM: "⛈️ Mal dormi", FOG: "🌫️ Stressé·e", ANGER: "😤 Mauvaise humeur",
     }
 
-    const newState = { type: "bilan", step: "BILAN_WAITING_HIGHLIGHT", mood, channel }
-    await prisma.user.update({ where: { id: user.id }, data: { slackConvState: JSON.stringify(newState) } })
-
-    const botToken = process.env.SLACK_BOT_TOKEN!
-    const openRes = await fetch("https://slack.com/api/conversations.open", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ users: slackUserId }),
-    })
-    const { channel: dmChannel } = await openRes.json()
-    if (dmChannel?.id) {
-      await fetch("https://slack.com/api/chat.postMessage", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          channel: dmChannel.id,
-          text: `${BILAN_LABELS[mood]} noté ! Un moment marquant cette semaine ? _(écris ici ou clique Passer)_`,
-          blocks: [{
-            type: "actions",
-            elements: [{ type: "button", text: { type: "plain_text", text: "Passer →" }, action_id: "skip_highlight" }],
-          }],
-        }),
-      })
-    }
-    return new NextResponse("ok")
-  }
-
-  // ── Passer moment marquant ────────────────────────────────────────────────
-  if (payload.type === "block_actions" && payload.actions?.[0]?.action_id === "skip_highlight") {
-    const slackUserId = payload.user?.id
-    const user = await prisma.user.findFirst({ where: { slackUserId } })
-    if (!user?.slackConvState) return new NextResponse("ok")
-    const state = JSON.parse(user.slackConvState)
-    const newState = { ...state, step: "BILAN_WAITING_SUMMARY", highlightText: null }
-    await prisma.user.update({ where: { id: user.id }, data: { slackConvState: JSON.stringify(newState) } })
-    const botToken = process.env.SLACK_BOT_TOKEN!
-    const openRes = await fetch("https://slack.com/api/conversations.open", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ users: slackUserId }),
-    })
-    const { channel: dmChannel } = await openRes.json()
-    if (dmChannel?.id) {
-      await fetch("https://slack.com/api/chat.postMessage", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          channel: dmChannel.id,
-          text: "Ce que tu emportes de cette semaine ? _(écris ici ou clique Passer)_",
-          blocks: [{
-            type: "actions",
-            elements: [{ type: "button", text: { type: "plain_text", text: "Passer →" }, action_id: "skip_summary" }],
-          }],
-        }),
-      })
-    }
-    return new NextResponse("ok")
-  }
-
-  // ── Passer ce que j'emporte → sauvegarder bilan ───────────────────────────
-  if (payload.type === "block_actions" && payload.actions?.[0]?.action_id === "skip_summary") {
-    const slackUserId = payload.user?.id
-    const user = await prisma.user.findFirst({ where: { slackUserId } })
-    if (!user?.slackConvState) return new NextResponse("ok")
-    const state = JSON.parse(user.slackConvState)
-    await saveBilan(user, { ...state, summaryText: null })
+    // Sauvegarder le bilan directement avec juste l'humeur
+    await saveBilan(user, { mood, highlightText: null, summaryText: null })
     return new NextResponse("ok")
   }
 

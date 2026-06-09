@@ -32,7 +32,7 @@ async function handler(req: NextRequest) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        text: "📋 *Bilan de semaine !*\n📹 Partagez votre clip vidéo directement ici (bouton 📷 dans la barre de message)\nVous recevez aussi un DM pour le bilan texte 👇",
+        text: "📹 *Bilan de semaine — postez votre clip vidéo ici !*\nBouton caméra 📷 dans la barre de message · 1 à 2 min · aucune préparation\n_Vous recevez aussi un DM pour noter votre humeur de la semaine 👇_",
       }),
     }).catch(() => {})
   }
