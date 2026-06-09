@@ -7,8 +7,8 @@ const MOODS = [
   { value: "SUN",   emoji: "☀️",  label: "Au top" },
   { value: "CLOUD", emoji: "⛅",  label: "Correct" },
   { value: "RAIN",  emoji: "🌧️", label: "Difficile" },
-  { value: "STORM", emoji: "⛈️", label: "Épuisé·e" },
-  { value: "FOG",   emoji: "🌫️", label: "Flou" },
+  { value: "STORM", emoji: "⛈️", label: "Mal dormi·e" },
+  { value: "FOG",   emoji: "🌫️", label: "Stressé·e" },
   { value: "ANGER", emoji: "😤",  label: "Mauvaise humeur" },
 ]
 
