@@ -98,15 +98,52 @@ export async function POST(req: NextRequest) {
 
   if (videoFile) {
     const user = await prisma.user.findFirst({ where: { slackUserId } })
-    const webhookUrl = process.env.SLACK_WEBHOOK_URL
-    if (user && webhookUrl && videoFile.permalink) {
-      await fetch(webhookUrl, {
+    if (user) {
+      const botToken  = process.env.SLACK_BOT_TOKEN!
+      const urlPrivate = videoFile.url_private
+      const fileName   = videoFile.name ?? "bilan.mp4"
+
+      if (!urlPrivate) {
+        console.error("[video] url_private absent du payload:", JSON.stringify(Object.keys(videoFile)))
+        return NextResponse.json({ ok: true })
+      }
+
+      // Télécharger la vidéo depuis le DM
+      const videoRes = await fetch(urlPrivate, {
+        headers: { Authorization: `Bearer ${botToken}` },
+      })
+      if (!videoRes.ok) {
+        console.error("[video] échec download:", videoRes.status)
+        return NextResponse.json({ ok: true })
+      }
+      const videoBuffer = await videoRes.arrayBuffer()
+
+      // Demander une URL d'upload à Slack
+      const uploadUrlRes = await slackPost("files.getUploadURLExternal", {
+        filename: fileName,
+        length: videoBuffer.byteLength,
+      })
+      if (!uploadUrlRes.ok) {
+        console.error("[video] getUploadURLExternal:", uploadUrlRes.error)
+        return NextResponse.json({ ok: true })
+      }
+
+      // Envoyer le fichier à l'URL d'upload (POST avec octet-stream)
+      await fetch(uploadUrlRes.upload_url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: `📹 *${user.name}* — bilan de semaine\n${videoFile.permalink}`,
-        }),
-      }).catch(() => {})
+        headers: { "Content-Type": "application/octet-stream" },
+        body: videoBuffer,
+      })
+
+      // Finaliser et poster dans #1-standup
+      const completeRes = await slackPost("files.completeUploadExternal", {
+        files: [{ id: uploadUrlRes.file_id, title: `📹 ${user.name} — bilan de semaine` }],
+        channel_id: "C02GDFCA6G7",
+        initial_comment: `📹 *${user.name}* — bilan de semaine`,
+      })
+      if (!completeRes.ok) {
+        console.error("[video] completeUploadExternal:", completeRes.error)
+      }
     }
     return NextResponse.json({ ok: true })
   }
@@ -184,7 +221,7 @@ export async function POST(req: NextRequest) {
       }).catch(() => {})
     }
 
-    await sendDM(channel, `✅ Bilan enregistré ! Bonne fin de semaine ${user.name} 🌿\n📹 N'oublie pas ton clip vidéo dans #1-standup !`)
+    await sendDM(channel, `✅ Bilan enregistré ! Bonne fin de semaine ${user.name} 🌿\n📹 N'oublie pas ton clip vidéo — dans le champ de message, clique sur *···* (plus d'options, juste en dessous) → *caméra* 🎥 → il s'enverra directement dans <#C02GDFCA6G7> !`)
     return NextResponse.json({ ok: true })
   }
 
