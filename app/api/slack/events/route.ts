@@ -99,50 +99,61 @@ export async function POST(req: NextRequest) {
   if (videoFile) {
     const user = await prisma.user.findFirst({ where: { slackUserId } })
     if (user) {
-      const botToken  = process.env.SLACK_BOT_TOKEN!
-      const urlPrivate = videoFile.url_private
-      const fileName   = videoFile.name ?? "bilan.mp4"
+      const botToken = process.env.SLACK_BOT_TOKEN!
 
+      // Les events Slack envoient des stubs — récupérer les infos complètes via GET
+      let urlPrivate: string | undefined = videoFile.url_private
+      let fileName: string = videoFile.name ?? "bilan.mp4"
       if (!urlPrivate) {
-        console.error("[video] url_private absent du payload:", JSON.stringify(Object.keys(videoFile)))
-        return NextResponse.json({ ok: true })
+        const infoRes = await fetch(
+          `https://slack.com/api/files.info?file=${videoFile.id}`,
+          { headers: { Authorization: `Bearer ${botToken}` } }
+        ).then(r => r.json())
+        urlPrivate = infoRes.file?.url_private
+        fileName   = infoRes.file?.name ?? fileName
       }
 
-      // Télécharger la vidéo depuis le DM
-      const videoRes = await fetch(urlPrivate, {
-        headers: { Authorization: `Bearer ${botToken}` },
-      })
-      if (!videoRes.ok) {
-        console.error("[video] échec download:", videoRes.status)
-        return NextResponse.json({ ok: true })
+      let posted = false
+
+      if (urlPrivate) {
+        try {
+          const videoRes = await fetch(urlPrivate, {
+            headers: { Authorization: `Bearer ${botToken}` },
+          })
+          const videoBuffer = await videoRes.arrayBuffer()
+
+          const uploadUrlRes = await slackPost("files.getUploadURLExternal", {
+            filename: fileName,
+            length: videoBuffer.byteLength,
+          })
+
+          if (uploadUrlRes.ok) {
+            await fetch(uploadUrlRes.upload_url, {
+              method: "POST",
+              headers: { "Content-Type": "application/octet-stream" },
+              body: videoBuffer,
+            })
+            const completeRes = await slackPost("files.completeUploadExternal", {
+              files: [{ id: uploadUrlRes.file_id, title: `📹 ${user.name} — bilan de semaine` }],
+              channel_id: "C02GDFCA6G7",
+              initial_comment: `📹 *${user.name}* — bilan de semaine`,
+            })
+            if (completeRes.ok) posted = true
+            else console.error("[video] completeUploadExternal:", completeRes.error)
+          } else {
+            console.error("[video] getUploadURLExternal:", uploadUrlRes.error)
+          }
+        } catch (err) {
+          console.error("[video] erreur upload:", err)
+        }
       }
-      const videoBuffer = await videoRes.arrayBuffer()
 
-      // Demander une URL d'upload à Slack
-      const uploadUrlRes = await slackPost("files.getUploadURLExternal", {
-        filename: fileName,
-        length: videoBuffer.byteLength,
-      })
-      if (!uploadUrlRes.ok) {
-        console.error("[video] getUploadURLExternal:", uploadUrlRes.error)
-        return NextResponse.json({ ok: true })
-      }
-
-      // Envoyer le fichier à l'URL d'upload (POST avec octet-stream)
-      await fetch(uploadUrlRes.upload_url, {
-        method: "POST",
-        headers: { "Content-Type": "application/octet-stream" },
-        body: videoBuffer,
-      })
-
-      // Finaliser et poster dans #1-standup
-      const completeRes = await slackPost("files.completeUploadExternal", {
-        files: [{ id: uploadUrlRes.file_id, title: `📹 ${user.name} — bilan de semaine` }],
-        channel_id: "C02GDFCA6G7",
-        initial_comment: `📹 *${user.name}* — bilan de semaine`,
-      })
-      if (!completeRes.ok) {
-        console.error("[video] completeUploadExternal:", completeRes.error)
+      // Fallback : poster au moins le permalink si l'upload échoue
+      if (!posted) {
+        await slackPost("chat.postMessage", {
+          channel: "C02GDFCA6G7",
+          text: `📹 *${user.name}* — bilan de semaine\n${videoFile.permalink}`,
+        })
       }
     }
     return NextResponse.json({ ok: true })
