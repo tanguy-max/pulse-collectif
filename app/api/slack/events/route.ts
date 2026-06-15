@@ -99,6 +99,21 @@ export async function POST(req: NextRequest) {
   if (videoFile) {
     const user = await prisma.user.findFirst({ where: { slackUserId } })
     if (user) {
+      // Récupérer le bilan de la semaine pour afficher la météo
+      const weekStart = new Date()
+      weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1)
+      weekStart.setHours(0, 0, 0, 0)
+      const recentBilan = await prisma.meteo.findFirst({
+        where: { userId: user.id, createdAt: { gte: weekStart }, weekHighlight: null, weekSummary: null },
+        orderBy: { createdAt: "desc" },
+      })
+      const BILAN_LABELS: Record<string, string> = {
+        SUN: "🌟 Super", CLOUD: "👍 Normale", FOG: "😐 Bof",
+        RAIN: "😰 Stressante", STORM: "😴 Fatiguante", ANGER: "😤 Mauvaise humeur",
+      }
+      const moodLabel = recentBilan ? BILAN_LABELS[recentBilan.mood] ?? "" : ""
+      const bilanLine = moodLabel ? `Semaine : *${moodLabel}*` : ""
+
       const botToken = process.env.SLACK_BOT_TOKEN!
 
       // Les events Slack envoient des stubs — récupérer les infos complètes via GET
@@ -136,7 +151,7 @@ export async function POST(req: NextRequest) {
             const completeRes = await slackPost("files.completeUploadExternal", {
               files: [{ id: uploadUrlRes.file_id, title: `📹 ${user.name} — bilan de semaine` }],
               channel_id: "C02GDFCA6G7",
-              initial_comment: `📹 *${user.name}* — bilan de semaine`,
+              initial_comment: [`📹 *${user.name}* — bilan de semaine`, bilanLine].filter(Boolean).join("\n"),
             })
             if (completeRes.ok) posted = true
             else console.error("[video] completeUploadExternal:", completeRes.error)
@@ -152,7 +167,7 @@ export async function POST(req: NextRequest) {
       if (!posted) {
         await slackPost("chat.postMessage", {
           channel: "C02GDFCA6G7",
-          text: `📹 *${user.name}* — bilan de semaine\n${videoFile.permalink}`,
+          text: [`📹 *${user.name}* — bilan de semaine`, bilanLine, videoFile.permalink].filter(Boolean).join("\n"),
         })
       }
     }
