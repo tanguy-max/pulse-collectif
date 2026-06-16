@@ -173,6 +173,14 @@ export async function POST(req: NextRequest) {
 
   const payload = JSON.parse(payloadStr)
 
+  // ── Clic "Passer" tâches ─────────────────────────────────────────────────
+  if (payload.type === "block_actions" && payload.actions?.[0]?.action_id === "skip_tasks") {
+    const slackUserId = payload.user?.id
+    const user = await prisma.user.findFirst({ where: { slackUserId } })
+    if (user) await prisma.user.update({ where: { id: user.id }, data: { slackConvState: null } })
+    return new NextResponse("ok")
+  }
+
   // ── Clic bouton bilan → démarrer flux bilan ──────────────────────────────
   if (payload.type === "block_actions" && payload.actions?.[0]?.action_id?.startsWith("bilan_")) {
     const action      = payload.actions[0]
@@ -282,9 +290,10 @@ export async function POST(req: NextRequest) {
     // DM aux leads si contenu partagé en "Lead"
     await notifyLeads(user.name, mood, user.teamId, contextText, contextAudience, blockerText, blockerAudience)
 
-    // DM de confirmation avec lien tâches
+    // DM : demander les tâches du jour
     const botToken = process.env.SLACK_BOT_TOKEN
     if (botToken) {
+      await prisma.user.update({ where: { id: user.id }, data: { slackConvState: JSON.stringify({ step: "WAITING_TASKS" }) } })
       const openRes = await fetch("https://slack.com/api/conversations.open", {
         method: "POST",
         headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
@@ -297,7 +306,11 @@ export async function POST(req: NextRequest) {
           headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
           body: JSON.stringify({
             channel: channel.id,
-            text: `✅ Météo enregistrée : *${MOOD_LABELS[mood]}*\n📋 <${APP_URL}/meteo|Ajoute tes tâches du jour>`,
+            text: `✅ Météo enregistrée : *${MOOD_LABELS[mood]}*\n📋 Quelles sont tes tâches du jour ?\n_Une par ligne, envoie quand tu es prêt·e_`,
+            blocks: [
+              { type: "section", text: { type: "mrkdwn", text: `✅ Météo enregistrée : *${MOOD_LABELS[mood]}*\n\n📋 *Quelles sont tes tâches du jour ?*\n_Une par ligne, envoie quand tu es prêt·e_` } },
+              { type: "actions", elements: [{ type: "button", text: { type: "plain_text", text: "Passer →" }, action_id: "skip_tasks" }] },
+            ],
           }),
         })
       }

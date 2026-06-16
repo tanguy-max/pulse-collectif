@@ -214,6 +214,26 @@ export async function POST(req: NextRequest) {
 
   const state = JSON.parse(user.slackConvState)
 
+  // ── WAITING_TASKS : l'utilisateur liste ses tâches du jour ─────────────
+  if (state.step === "WAITING_TASKS") {
+    const tasks = text.split("\n").map((t: string) => t.replace(/^[-•*]\s*/, "").trim()).filter(Boolean)
+    if (tasks.length > 0) {
+      const today = new Date()
+      const date  = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      await prisma.task.createMany({
+        data: tasks.map((t: string) => ({ userId: user.id, teamId: user.teamId, text: t, date })),
+      })
+      const lines = [`📋 *${user.name}* — tâches du jour`, ...tasks.map((t: string) => `• ${t}`)]
+      await slackPost("chat.postMessage", { channel: "C02GDFCA6G7", text: lines.join("\n") })
+    }
+    await prisma.user.update({ where: { id: user.id }, data: { slackConvState: null } })
+    await sendDM(channel, tasks.length > 0
+      ? `✅ ${tasks.length} tâche${tasks.length > 1 ? "s" : ""} partagée${tasks.length > 1 ? "s" : ""} dans <#C02GDFCA6G7> !`
+      : `OK, pas de tâches aujourd'hui 👍`
+    )
+    return NextResponse.json({ ok: true })
+  }
+
   // ── WAITING_CONTEXT : l'utilisateur tape son contexte ───────────────────
   if (state.step === "WAITING_CONTEXT") {
     const newState = { ...state, step: "WAITING_CONTEXT_AUD", contextText: text }
