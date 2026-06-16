@@ -282,6 +282,27 @@ export async function POST(req: NextRequest) {
     // DM aux leads si contenu partagé en "Lead"
     await notifyLeads(user.name, mood, user.teamId, contextText, contextAudience, blockerText, blockerAudience)
 
+    // DM de confirmation avec lien tâches
+    const botToken = process.env.SLACK_BOT_TOKEN
+    if (botToken) {
+      const openRes = await fetch("https://slack.com/api/conversations.open", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ users: slackUserId }),
+      })
+      const { channel } = await openRes.json()
+      if (channel?.id) {
+        await fetch("https://slack.com/api/chat.postMessage", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            channel: channel.id,
+            text: `✅ Météo enregistrée : *${MOOD_LABELS[mood]}*\n📋 <${APP_URL}/meteo|Ajoute tes tâches du jour>`,
+          }),
+        })
+      }
+    }
+
     return NextResponse.json({
       response_action: "update",
       view: {
