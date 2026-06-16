@@ -83,9 +83,41 @@ export async function POST(req: NextRequest) {
   if (payload.type !== "event_callback") return NextResponse.json({ ok: true })
 
   const event = payload.event
-  if (event.type !== "message" || event.channel_type !== "im" || event.bot_id) {
+  if (event.type !== "message" || event.bot_id) {
     return NextResponse.json({ ok: true })
   }
+
+  // ── Thread reply dans #1-standup → notifier l'auteur de la météo ──────────
+  if (event.channel === "C02GDFCA6G7" && event.thread_ts && event.thread_ts !== event.ts) {
+    const repliesRes = await slackPost("conversations.replies", {
+      channel: "C02GDFCA6G7",
+      ts: event.thread_ts,
+      limit: 1,
+      inclusive: true,
+    })
+    const originalMsg = repliesRes.messages?.[0]
+    const nameMatch   = originalMsg?.text?.match(/\*(.+?)\*/)
+    if (nameMatch) {
+      const targetUser = await prisma.user.findFirst({
+        where: { name: nameMatch[1], slackUserId: { not: null } },
+      })
+      if (targetUser && targetUser.slackUserId !== event.user) {
+        const commenter = await prisma.user.findFirst({ where: { slackUserId: event.user } })
+        const commenterName = commenter?.name ?? "Quelqu'un"
+        const openRes = await slackPost("conversations.open", { users: targetUser.slackUserId })
+        const dmChannel = openRes.channel?.id
+        if (dmChannel) {
+          await sendDM(dmChannel,
+            `💬 *${commenterName}* a commenté ta météo dans <#C02GDFCA6G7> :\n_"${event.text}"_`
+          )
+        }
+      }
+    }
+    return NextResponse.json({ ok: true })
+  }
+
+  // Ignorer les messages hors DM
+  if (event.channel_type !== "im") return NextResponse.json({ ok: true })
 
   const slackUserId = event.user
   const channel     = event.channel
