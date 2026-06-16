@@ -208,6 +208,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
   meteos?: Prisma.MeteoListRelationFilter
+  tasks?: Prisma.TaskListRelationFilter
   sentGratitudes?: Prisma.GratitudeListRelationFilter
   receivedGratitudes?: Prisma.GratitudeListRelationFilter
   videos?: Prisma.VideoListRelationFilter
@@ -226,6 +227,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   team?: Prisma.TeamOrderByWithRelationInput
   meteos?: Prisma.MeteoOrderByRelationAggregateInput
+  tasks?: Prisma.TaskOrderByRelationAggregateInput
   sentGratitudes?: Prisma.GratitudeOrderByRelationAggregateInput
   receivedGratitudes?: Prisma.GratitudeOrderByRelationAggregateInput
   videos?: Prisma.VideoOrderByRelationAggregateInput
@@ -247,6 +249,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   team?: Prisma.XOR<Prisma.TeamScalarRelationFilter, Prisma.TeamWhereInput>
   meteos?: Prisma.MeteoListRelationFilter
+  tasks?: Prisma.TaskListRelationFilter
   sentGratitudes?: Prisma.GratitudeListRelationFilter
   receivedGratitudes?: Prisma.GratitudeListRelationFilter
   videos?: Prisma.VideoListRelationFilter
@@ -292,6 +295,7 @@ export type UserCreateInput = {
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoCreateNestedManyWithoutUserInput
@@ -309,6 +313,7 @@ export type UserUncheckedCreateInput = {
   slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutUserInput
@@ -326,6 +331,7 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUpdateManyWithoutUserNestedInput
@@ -343,6 +349,7 @@ export type UserUncheckedUpdateInput = {
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutUserNestedInput
@@ -543,6 +550,20 @@ export type UserUpdateOneWithoutReceivedGratitudesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReceivedGratitudesInput, Prisma.UserUpdateWithoutReceivedGratitudesInput>, Prisma.UserUncheckedUpdateWithoutReceivedGratitudesInput>
 }
 
+export type UserCreateNestedOneWithoutTasksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTasksInput, Prisma.UserUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTasksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTasksInput, Prisma.UserUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTasksInput
+  upsert?: Prisma.UserUpsertWithoutTasksInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTasksInput, Prisma.UserUpdateWithoutTasksInput>, Prisma.UserUncheckedUpdateWithoutTasksInput>
+}
+
 export type UserCreateNestedOneWithoutActionsAsLeadInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutActionsAsLeadInput, Prisma.UserUncheckedCreateWithoutActionsAsLeadInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutActionsAsLeadInput
@@ -580,6 +601,7 @@ export type UserCreateWithoutTeamInput = {
   slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoCreateNestedManyWithoutUserInput
@@ -596,6 +618,7 @@ export type UserUncheckedCreateWithoutTeamInput = {
   slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutUserInput
@@ -653,6 +676,7 @@ export type UserCreateWithoutVideosInput = {
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeCreateNestedManyWithoutToUserInput
   actionsAsLead?: Prisma.LeadActionCreateNestedManyWithoutLeadInput
@@ -669,6 +693,7 @@ export type UserUncheckedCreateWithoutVideosInput = {
   slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
   actionsAsLead?: Prisma.LeadActionUncheckedCreateNestedManyWithoutLeadInput
@@ -701,6 +726,7 @@ export type UserUpdateWithoutVideosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUpdateManyWithoutToUserNestedInput
   actionsAsLead?: Prisma.LeadActionUpdateManyWithoutLeadNestedInput
@@ -717,6 +743,7 @@ export type UserUncheckedUpdateWithoutVideosInput = {
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
   actionsAsLead?: Prisma.LeadActionUncheckedUpdateManyWithoutLeadNestedInput
@@ -732,6 +759,7 @@ export type UserCreateWithoutMeteosInput = {
   slackConvState?: string | null
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoCreateNestedManyWithoutUserInput
@@ -748,6 +776,7 @@ export type UserUncheckedCreateWithoutMeteosInput = {
   slackUserId?: string | null
   slackConvState?: string | null
   createdAt?: Date | string
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutUserInput
@@ -780,6 +809,7 @@ export type UserUpdateWithoutMeteosInput = {
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUpdateManyWithoutUserNestedInput
@@ -796,6 +826,7 @@ export type UserUncheckedUpdateWithoutMeteosInput = {
   slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutUserNestedInput
@@ -813,6 +844,7 @@ export type UserCreateWithoutSentGratitudesInput = {
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   receivedGratitudes?: Prisma.GratitudeCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoCreateNestedManyWithoutUserInput
   actionsAsLead?: Prisma.LeadActionCreateNestedManyWithoutLeadInput
@@ -829,6 +861,7 @@ export type UserUncheckedCreateWithoutSentGratitudesInput = {
   slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutUserInput
   actionsAsLead?: Prisma.LeadActionUncheckedCreateNestedManyWithoutLeadInput
@@ -850,6 +883,7 @@ export type UserCreateWithoutReceivedGratitudesInput = {
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
   videos?: Prisma.VideoCreateNestedManyWithoutUserInput
   actionsAsLead?: Prisma.LeadActionCreateNestedManyWithoutLeadInput
@@ -866,6 +900,7 @@ export type UserUncheckedCreateWithoutReceivedGratitudesInput = {
   slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutUserInput
   actionsAsLead?: Prisma.LeadActionUncheckedCreateNestedManyWithoutLeadInput
@@ -898,6 +933,7 @@ export type UserUpdateWithoutSentGratitudesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUpdateManyWithoutUserNestedInput
   actionsAsLead?: Prisma.LeadActionUpdateManyWithoutLeadNestedInput
@@ -914,6 +950,7 @@ export type UserUncheckedUpdateWithoutSentGratitudesInput = {
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutUserNestedInput
   actionsAsLead?: Prisma.LeadActionUncheckedUpdateManyWithoutLeadNestedInput
@@ -941,6 +978,7 @@ export type UserUpdateWithoutReceivedGratitudesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
   videos?: Prisma.VideoUpdateManyWithoutUserNestedInput
   actionsAsLead?: Prisma.LeadActionUpdateManyWithoutLeadNestedInput
@@ -957,7 +995,92 @@ export type UserUncheckedUpdateWithoutReceivedGratitudesInput = {
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutUserNestedInput
+  actionsAsLead?: Prisma.LeadActionUncheckedUpdateManyWithoutLeadNestedInput
+  actionsAsMember?: Prisma.LeadActionUncheckedUpdateManyWithoutMemberNestedInput
+}
+
+export type UserCreateWithoutTasksInput = {
+  id?: string
+  name: string
+  initials: string
+  role?: $Enums.Role
+  slackUserId?: string | null
+  slackConvState?: string | null
+  createdAt?: Date | string
+  team: Prisma.TeamCreateNestedOneWithoutUsersInput
+  meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
+  sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
+  receivedGratitudes?: Prisma.GratitudeCreateNestedManyWithoutToUserInput
+  videos?: Prisma.VideoCreateNestedManyWithoutUserInput
+  actionsAsLead?: Prisma.LeadActionCreateNestedManyWithoutLeadInput
+  actionsAsMember?: Prisma.LeadActionCreateNestedManyWithoutMemberInput
+}
+
+export type UserUncheckedCreateWithoutTasksInput = {
+  id?: string
+  name: string
+  initials: string
+  role?: $Enums.Role
+  teamId: string
+  slackUserId?: string | null
+  slackConvState?: string | null
+  createdAt?: Date | string
+  meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
+  sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
+  receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutUserInput
+  actionsAsLead?: Prisma.LeadActionUncheckedCreateNestedManyWithoutLeadInput
+  actionsAsMember?: Prisma.LeadActionUncheckedCreateNestedManyWithoutMemberInput
+}
+
+export type UserCreateOrConnectWithoutTasksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTasksInput, Prisma.UserUncheckedCreateWithoutTasksInput>
+}
+
+export type UserUpsertWithoutTasksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTasksInput, Prisma.UserUncheckedUpdateWithoutTasksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTasksInput, Prisma.UserUncheckedCreateWithoutTasksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTasksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTasksInput, Prisma.UserUncheckedUpdateWithoutTasksInput>
+}
+
+export type UserUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  initials?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
+  meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
+  sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
+  receivedGratitudes?: Prisma.GratitudeUpdateManyWithoutToUserNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutUserNestedInput
+  actionsAsLead?: Prisma.LeadActionUpdateManyWithoutLeadNestedInput
+  actionsAsMember?: Prisma.LeadActionUpdateManyWithoutMemberNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  initials?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  teamId?: Prisma.StringFieldUpdateOperationsInput | string
+  slackUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
+  sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
+  receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutUserNestedInput
   actionsAsLead?: Prisma.LeadActionUncheckedUpdateManyWithoutLeadNestedInput
   actionsAsMember?: Prisma.LeadActionUncheckedUpdateManyWithoutMemberNestedInput
@@ -973,6 +1096,7 @@ export type UserCreateWithoutActionsAsLeadInput = {
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoCreateNestedManyWithoutUserInput
@@ -989,6 +1113,7 @@ export type UserUncheckedCreateWithoutActionsAsLeadInput = {
   slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutUserInput
@@ -1010,6 +1135,7 @@ export type UserCreateWithoutActionsAsMemberInput = {
   createdAt?: Date | string
   team: Prisma.TeamCreateNestedOneWithoutUsersInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoCreateNestedManyWithoutUserInput
@@ -1026,6 +1152,7 @@ export type UserUncheckedCreateWithoutActionsAsMemberInput = {
   slackConvState?: string | null
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   sentGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutFromUserInput
   receivedGratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutToUserInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutUserInput
@@ -1058,6 +1185,7 @@ export type UserUpdateWithoutActionsAsLeadInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUpdateManyWithoutUserNestedInput
@@ -1074,6 +1202,7 @@ export type UserUncheckedUpdateWithoutActionsAsLeadInput = {
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutUserNestedInput
@@ -1101,6 +1230,7 @@ export type UserUpdateWithoutActionsAsMemberInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneRequiredWithoutUsersNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUpdateManyWithoutUserNestedInput
@@ -1117,6 +1247,7 @@ export type UserUncheckedUpdateWithoutActionsAsMemberInput = {
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutUserNestedInput
@@ -1142,6 +1273,7 @@ export type UserUpdateWithoutTeamInput = {
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUpdateManyWithoutUserNestedInput
@@ -1158,6 +1290,7 @@ export type UserUncheckedUpdateWithoutTeamInput = {
   slackConvState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   sentGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutFromUserNestedInput
   receivedGratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutToUserNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutUserNestedInput
@@ -1182,6 +1315,7 @@ export type UserUncheckedUpdateManyWithoutTeamInput = {
 
 export type UserCountOutputType = {
   meteos: number
+  tasks: number
   sentGratitudes: number
   receivedGratitudes: number
   videos: number
@@ -1191,6 +1325,7 @@ export type UserCountOutputType = {
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   meteos?: boolean | UserCountOutputTypeCountMeteosArgs
+  tasks?: boolean | UserCountOutputTypeCountTasksArgs
   sentGratitudes?: boolean | UserCountOutputTypeCountSentGratitudesArgs
   receivedGratitudes?: boolean | UserCountOutputTypeCountReceivedGratitudesArgs
   videos?: boolean | UserCountOutputTypeCountVideosArgs
@@ -1213,6 +1348,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
  */
 export type UserCountOutputTypeCountMeteosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MeteoWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TaskWhereInput
 }
 
 /**
@@ -1262,6 +1404,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
   meteos?: boolean | Prisma.User$meteosArgs<ExtArgs>
+  tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
   sentGratitudes?: boolean | Prisma.User$sentGratitudesArgs<ExtArgs>
   receivedGratitudes?: boolean | Prisma.User$receivedGratitudesArgs<ExtArgs>
   videos?: boolean | Prisma.User$videosArgs<ExtArgs>
@@ -1309,6 +1452,7 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   team?: boolean | Prisma.TeamDefaultArgs<ExtArgs>
   meteos?: boolean | Prisma.User$meteosArgs<ExtArgs>
+  tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
   sentGratitudes?: boolean | Prisma.User$sentGratitudesArgs<ExtArgs>
   receivedGratitudes?: boolean | Prisma.User$receivedGratitudesArgs<ExtArgs>
   videos?: boolean | Prisma.User$videosArgs<ExtArgs>
@@ -1328,6 +1472,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     team: Prisma.$TeamPayload<ExtArgs>
     meteos: Prisma.$MeteoPayload<ExtArgs>[]
+    tasks: Prisma.$TaskPayload<ExtArgs>[]
     sentGratitudes: Prisma.$GratitudePayload<ExtArgs>[]
     receivedGratitudes: Prisma.$GratitudePayload<ExtArgs>[]
     videos: Prisma.$VideoPayload<ExtArgs>[]
@@ -1739,6 +1884,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   team<T extends Prisma.TeamDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TeamDefaultArgs<ExtArgs>>): Prisma.Prisma__TeamClient<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   meteos<T extends Prisma.User$meteosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$meteosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeteoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tasks<T extends Prisma.User$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sentGratitudes<T extends Prisma.User$sentGratitudesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentGratitudesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GratitudePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   receivedGratitudes<T extends Prisma.User$receivedGratitudesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$receivedGratitudesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GratitudePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   videos<T extends Prisma.User$videosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$videosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2203,6 +2349,30 @@ export type User$meteosArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.MeteoScalarFieldEnum | Prisma.MeteoScalarFieldEnum[]
+}
+
+/**
+ * User.tasks
+ */
+export type User$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Task
+   */
+  select?: Prisma.TaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Task
+   */
+  omit?: Prisma.TaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaskInclude<ExtArgs> | null
+  where?: Prisma.TaskWhereInput
+  orderBy?: Prisma.TaskOrderByWithRelationInput | Prisma.TaskOrderByWithRelationInput[]
+  cursor?: Prisma.TaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[]
 }
 
 /**

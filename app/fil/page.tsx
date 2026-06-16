@@ -16,12 +16,18 @@ export default async function FilPage() {
   const weekStart = new Date(todayStart)
   weekStart.setDate(weekStart.getDate() - dayOfWeek)
 
-  // Météos du jour
-  const todayMeteos = await prisma.meteo.findMany({
-    where: { teamId: session.teamId, createdAt: { gte: todayStart } },
-    include: { user: true },
-    orderBy: { createdAt: "desc" },
-  })
+  // Météos du jour + tâches
+  const [todayMeteos, todayTasks] = await Promise.all([
+    prisma.meteo.findMany({
+      where: { teamId: session.teamId, createdAt: { gte: todayStart } },
+      include: { user: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.task.findMany({
+      where: { teamId: session.teamId, date: { gte: todayStart } },
+      orderBy: { createdAt: "asc" },
+    }),
+  ])
 
   // Météos de la semaine + membres pour le récap
   const [weekMeteos, members] = await Promise.all([
@@ -95,6 +101,8 @@ export default async function FilPage() {
                 (m.contextText && m.contextAudience === "LEAD") ||
                 (m.blockerText && m.blockerAudience === "LEAD")
 
+              const userTasks = todayTasks.filter(t => t.userId === m.userId)
+
               return (
                 <article key={m.id} className="bg-white rounded-2xl p-4 border border-gray-100 space-y-3">
                   <div className="flex items-center gap-3">
@@ -128,6 +136,23 @@ export default async function FilPage() {
                       <span className="text-xs px-2 py-0.5 rounded-full bg-primary-light text-primary font-medium">
                         lead seul
                       </span>
+                    </div>
+                  )}
+
+                  {userTasks.length > 0 && (
+                    <div className="border-t border-gray-50 pt-3 space-y-1.5">
+                      {userTasks.map(task => (
+                        <div key={task.id} className="flex items-center gap-2">
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                            task.done ? "bg-success border-success" : "border-gray-300"
+                          }`}>
+                            {task.done && <span className="text-white text-[8px] font-bold">✓</span>}
+                          </div>
+                          <span className={`text-sm ${task.done ? "line-through text-gray-300" : "text-gray-600"}`}>
+                            {task.text}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </article>

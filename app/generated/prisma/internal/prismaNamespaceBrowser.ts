@@ -56,6 +56,7 @@ export const ModelName = {
   Video: 'Video',
   Meteo: 'Meteo',
   Gratitude: 'Gratitude',
+  Task: 'Task',
   LeadAction: 'LeadAction'
 } as const
 
@@ -140,6 +141,19 @@ export const GratitudeScalarFieldEnum = {
 } as const
 
 export type GratitudeScalarFieldEnum = (typeof GratitudeScalarFieldEnum)[keyof typeof GratitudeScalarFieldEnum]
+
+
+export const TaskScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  teamId: 'teamId',
+  text: 'text',
+  done: 'done',
+  date: 'date',
+  createdAt: 'createdAt'
+} as const
+
+export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
 
 
 export const LeadActionScalarFieldEnum = {

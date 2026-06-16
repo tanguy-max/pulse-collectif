@@ -15,6 +15,7 @@ model Team {
 
   users       User[]
   meteos      Meteo[]
+  tasks       Task[]
   gratitudes  Gratitude[]
   videos      Video[]
   leadActions LeadAction[]
@@ -32,6 +33,7 @@ model User {
 
   team               Team         @relation(fields: [teamId], references: [id])
   meteos             Meteo[]
+  tasks              Task[]
   sentGratitudes     Gratitude[]  @relation("SentGratitudes")
   receivedGratitudes Gratitude[]  @relation("ReceivedGratitudes")
   videos             Video[]
@@ -83,6 +85,19 @@ model Gratitude {
   fromUser User  @relation("SentGratitudes", fields: [fromUserId], references: [id])
   toUser   User? @relation("ReceivedGratitudes", fields: [toUserId], references: [id])
   team     Team  @relation(fields: [teamId], references: [id])
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  userId    String
+  teamId    String
+  text      String
+  done      Boolean  @default(false)
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
 }
 
 model LeadAction {

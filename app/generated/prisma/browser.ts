@@ -43,6 +43,11 @@ export type Meteo = Prisma.MeteoModel
  */
 export type Gratitude = Prisma.GratitudeModel
 /**
+ * Model Task
+ * 
+ */
+export type Task = Prisma.TaskModel
+/**
  * Model LeadAction
  * 
  */

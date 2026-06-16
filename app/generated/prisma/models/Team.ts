@@ -176,6 +176,7 @@ export type TeamWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   users?: Prisma.UserListRelationFilter
   meteos?: Prisma.MeteoListRelationFilter
+  tasks?: Prisma.TaskListRelationFilter
   gratitudes?: Prisma.GratitudeListRelationFilter
   videos?: Prisma.VideoListRelationFilter
   leadActions?: Prisma.LeadActionListRelationFilter
@@ -188,6 +189,7 @@ export type TeamOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   users?: Prisma.UserOrderByRelationAggregateInput
   meteos?: Prisma.MeteoOrderByRelationAggregateInput
+  tasks?: Prisma.TaskOrderByRelationAggregateInput
   gratitudes?: Prisma.GratitudeOrderByRelationAggregateInput
   videos?: Prisma.VideoOrderByRelationAggregateInput
   leadActions?: Prisma.LeadActionOrderByRelationAggregateInput
@@ -203,6 +205,7 @@ export type TeamWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Team"> | Date | string
   users?: Prisma.UserListRelationFilter
   meteos?: Prisma.MeteoListRelationFilter
+  tasks?: Prisma.TaskListRelationFilter
   gratitudes?: Prisma.GratitudeListRelationFilter
   videos?: Prisma.VideoListRelationFilter
   leadActions?: Prisma.LeadActionListRelationFilter
@@ -235,6 +238,7 @@ export type TeamCreateInput = {
   createdAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutTeamInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionCreateNestedManyWithoutTeamInput
@@ -247,6 +251,7 @@ export type TeamUncheckedCreateInput = {
   createdAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutTeamInput
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionUncheckedCreateNestedManyWithoutTeamInput
@@ -259,6 +264,7 @@ export type TeamUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutTeamNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUpdateManyWithoutTeamNestedInput
@@ -271,6 +277,7 @@ export type TeamUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutTeamNestedInput
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUncheckedUpdateManyWithoutTeamNestedInput
@@ -387,6 +394,20 @@ export type TeamUpdateOneRequiredWithoutGratitudesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutGratitudesInput, Prisma.TeamUpdateWithoutGratitudesInput>, Prisma.TeamUncheckedUpdateWithoutGratitudesInput>
 }
 
+export type TeamCreateNestedOneWithoutTasksInput = {
+  create?: Prisma.XOR<Prisma.TeamCreateWithoutTasksInput, Prisma.TeamUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutTasksInput
+  connect?: Prisma.TeamWhereUniqueInput
+}
+
+export type TeamUpdateOneRequiredWithoutTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.TeamCreateWithoutTasksInput, Prisma.TeamUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.TeamCreateOrConnectWithoutTasksInput
+  upsert?: Prisma.TeamUpsertWithoutTasksInput
+  connect?: Prisma.TeamWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TeamUpdateToOneWithWhereWithoutTasksInput, Prisma.TeamUpdateWithoutTasksInput>, Prisma.TeamUncheckedUpdateWithoutTasksInput>
+}
+
 export type TeamCreateNestedOneWithoutLeadActionsInput = {
   create?: Prisma.XOR<Prisma.TeamCreateWithoutLeadActionsInput, Prisma.TeamUncheckedCreateWithoutLeadActionsInput>
   connectOrCreate?: Prisma.TeamCreateOrConnectWithoutLeadActionsInput
@@ -407,6 +428,7 @@ export type TeamCreateWithoutUsersInput = {
   joinCode: string
   createdAt?: Date | string
   meteos?: Prisma.MeteoCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionCreateNestedManyWithoutTeamInput
@@ -418,6 +440,7 @@ export type TeamUncheckedCreateWithoutUsersInput = {
   joinCode: string
   createdAt?: Date | string
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionUncheckedCreateNestedManyWithoutTeamInput
@@ -445,6 +468,7 @@ export type TeamUpdateWithoutUsersInput = {
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUpdateManyWithoutTeamNestedInput
@@ -456,6 +480,7 @@ export type TeamUncheckedUpdateWithoutUsersInput = {
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUncheckedUpdateManyWithoutTeamNestedInput
@@ -468,6 +493,7 @@ export type TeamCreateWithoutVideosInput = {
   createdAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutTeamInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionCreateNestedManyWithoutTeamInput
 }
@@ -479,6 +505,7 @@ export type TeamUncheckedCreateWithoutVideosInput = {
   createdAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutTeamInput
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionUncheckedCreateNestedManyWithoutTeamInput
 }
@@ -506,6 +533,7 @@ export type TeamUpdateWithoutVideosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutTeamNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUpdateManyWithoutTeamNestedInput
 }
@@ -517,6 +545,7 @@ export type TeamUncheckedUpdateWithoutVideosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutTeamNestedInput
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUncheckedUpdateManyWithoutTeamNestedInput
 }
@@ -527,6 +556,7 @@ export type TeamCreateWithoutMeteosInput = {
   joinCode: string
   createdAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionCreateNestedManyWithoutTeamInput
@@ -538,6 +568,7 @@ export type TeamUncheckedCreateWithoutMeteosInput = {
   joinCode: string
   createdAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionUncheckedCreateNestedManyWithoutTeamInput
@@ -565,6 +596,7 @@ export type TeamUpdateWithoutMeteosInput = {
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUpdateManyWithoutTeamNestedInput
@@ -576,6 +608,7 @@ export type TeamUncheckedUpdateWithoutMeteosInput = {
   joinCode?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUncheckedUpdateManyWithoutTeamNestedInput
@@ -588,6 +621,7 @@ export type TeamCreateWithoutGratitudesInput = {
   createdAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutTeamInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionCreateNestedManyWithoutTeamInput
 }
@@ -599,6 +633,7 @@ export type TeamUncheckedCreateWithoutGratitudesInput = {
   createdAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutTeamInput
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutTeamInput
   leadActions?: Prisma.LeadActionUncheckedCreateNestedManyWithoutTeamInput
 }
@@ -626,6 +661,7 @@ export type TeamUpdateWithoutGratitudesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutTeamNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUpdateManyWithoutTeamNestedInput
 }
@@ -637,6 +673,71 @@ export type TeamUncheckedUpdateWithoutGratitudesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutTeamNestedInput
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutTeamNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutTeamNestedInput
+  leadActions?: Prisma.LeadActionUncheckedUpdateManyWithoutTeamNestedInput
+}
+
+export type TeamCreateWithoutTasksInput = {
+  id?: string
+  name: string
+  joinCode: string
+  createdAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutTeamInput
+  meteos?: Prisma.MeteoCreateNestedManyWithoutTeamInput
+  gratitudes?: Prisma.GratitudeCreateNestedManyWithoutTeamInput
+  videos?: Prisma.VideoCreateNestedManyWithoutTeamInput
+  leadActions?: Prisma.LeadActionCreateNestedManyWithoutTeamInput
+}
+
+export type TeamUncheckedCreateWithoutTasksInput = {
+  id?: string
+  name: string
+  joinCode: string
+  createdAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTeamInput
+  meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutTeamInput
+  gratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutTeamInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutTeamInput
+  leadActions?: Prisma.LeadActionUncheckedCreateNestedManyWithoutTeamInput
+}
+
+export type TeamCreateOrConnectWithoutTasksInput = {
+  where: Prisma.TeamWhereUniqueInput
+  create: Prisma.XOR<Prisma.TeamCreateWithoutTasksInput, Prisma.TeamUncheckedCreateWithoutTasksInput>
+}
+
+export type TeamUpsertWithoutTasksInput = {
+  update: Prisma.XOR<Prisma.TeamUpdateWithoutTasksInput, Prisma.TeamUncheckedUpdateWithoutTasksInput>
+  create: Prisma.XOR<Prisma.TeamCreateWithoutTasksInput, Prisma.TeamUncheckedCreateWithoutTasksInput>
+  where?: Prisma.TeamWhereInput
+}
+
+export type TeamUpdateToOneWithWhereWithoutTasksInput = {
+  where?: Prisma.TeamWhereInput
+  data: Prisma.XOR<Prisma.TeamUpdateWithoutTasksInput, Prisma.TeamUncheckedUpdateWithoutTasksInput>
+}
+
+export type TeamUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutTeamNestedInput
+  meteos?: Prisma.MeteoUpdateManyWithoutTeamNestedInput
+  gratitudes?: Prisma.GratitudeUpdateManyWithoutTeamNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutTeamNestedInput
+  leadActions?: Prisma.LeadActionUpdateManyWithoutTeamNestedInput
+}
+
+export type TeamUncheckedUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  joinCode?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutTeamNestedInput
+  meteos?: Prisma.MeteoUncheckedUpdateManyWithoutTeamNestedInput
+  gratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutTeamNestedInput
   leadActions?: Prisma.LeadActionUncheckedUpdateManyWithoutTeamNestedInput
 }
@@ -648,6 +749,7 @@ export type TeamCreateWithoutLeadActionsInput = {
   createdAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutTeamInput
   meteos?: Prisma.MeteoCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoCreateNestedManyWithoutTeamInput
 }
@@ -659,6 +761,7 @@ export type TeamUncheckedCreateWithoutLeadActionsInput = {
   createdAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutTeamInput
   meteos?: Prisma.MeteoUncheckedCreateNestedManyWithoutTeamInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutTeamInput
   gratitudes?: Prisma.GratitudeUncheckedCreateNestedManyWithoutTeamInput
   videos?: Prisma.VideoUncheckedCreateNestedManyWithoutTeamInput
 }
@@ -686,6 +789,7 @@ export type TeamUpdateWithoutLeadActionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutTeamNestedInput
   meteos?: Prisma.MeteoUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUpdateManyWithoutTeamNestedInput
 }
@@ -697,6 +801,7 @@ export type TeamUncheckedUpdateWithoutLeadActionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutTeamNestedInput
   meteos?: Prisma.MeteoUncheckedUpdateManyWithoutTeamNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutTeamNestedInput
   gratitudes?: Prisma.GratitudeUncheckedUpdateManyWithoutTeamNestedInput
   videos?: Prisma.VideoUncheckedUpdateManyWithoutTeamNestedInput
 }
@@ -709,6 +814,7 @@ export type TeamUncheckedUpdateWithoutLeadActionsInput = {
 export type TeamCountOutputType = {
   users: number
   meteos: number
+  tasks: number
   gratitudes: number
   videos: number
   leadActions: number
@@ -717,6 +823,7 @@ export type TeamCountOutputType = {
 export type TeamCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | TeamCountOutputTypeCountUsersArgs
   meteos?: boolean | TeamCountOutputTypeCountMeteosArgs
+  tasks?: boolean | TeamCountOutputTypeCountTasksArgs
   gratitudes?: boolean | TeamCountOutputTypeCountGratitudesArgs
   videos?: boolean | TeamCountOutputTypeCountVideosArgs
   leadActions?: boolean | TeamCountOutputTypeCountLeadActionsArgs
@@ -749,6 +856,13 @@ export type TeamCountOutputTypeCountMeteosArgs<ExtArgs extends runtime.Types.Ext
 /**
  * TeamCountOutputType without action
  */
+export type TeamCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TaskWhereInput
+}
+
+/**
+ * TeamCountOutputType without action
+ */
 export type TeamCountOutputTypeCountGratitudesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.GratitudeWhereInput
 }
@@ -775,6 +889,7 @@ export type TeamSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   users?: boolean | Prisma.Team$usersArgs<ExtArgs>
   meteos?: boolean | Prisma.Team$meteosArgs<ExtArgs>
+  tasks?: boolean | Prisma.Team$tasksArgs<ExtArgs>
   gratitudes?: boolean | Prisma.Team$gratitudesArgs<ExtArgs>
   videos?: boolean | Prisma.Team$videosArgs<ExtArgs>
   leadActions?: boolean | Prisma.Team$leadActionsArgs<ExtArgs>
@@ -806,6 +921,7 @@ export type TeamOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type TeamInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Team$usersArgs<ExtArgs>
   meteos?: boolean | Prisma.Team$meteosArgs<ExtArgs>
+  tasks?: boolean | Prisma.Team$tasksArgs<ExtArgs>
   gratitudes?: boolean | Prisma.Team$gratitudesArgs<ExtArgs>
   videos?: boolean | Prisma.Team$videosArgs<ExtArgs>
   leadActions?: boolean | Prisma.Team$leadActionsArgs<ExtArgs>
@@ -819,6 +935,7 @@ export type $TeamPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     users: Prisma.$UserPayload<ExtArgs>[]
     meteos: Prisma.$MeteoPayload<ExtArgs>[]
+    tasks: Prisma.$TaskPayload<ExtArgs>[]
     gratitudes: Prisma.$GratitudePayload<ExtArgs>[]
     videos: Prisma.$VideoPayload<ExtArgs>[]
     leadActions: Prisma.$LeadActionPayload<ExtArgs>[]
@@ -1224,6 +1341,7 @@ export interface Prisma__TeamClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   users<T extends Prisma.Team$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   meteos<T extends Prisma.Team$meteosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$meteosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeteoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tasks<T extends Prisma.Team$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   gratitudes<T extends Prisma.Team$gratitudesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$gratitudesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GratitudePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   videos<T extends Prisma.Team$videosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$videosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leadActions<T extends Prisma.Team$leadActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Team$leadActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1698,6 +1816,30 @@ export type Team$meteosArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.MeteoScalarFieldEnum | Prisma.MeteoScalarFieldEnum[]
+}
+
+/**
+ * Team.tasks
+ */
+export type Team$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Task
+   */
+  select?: Prisma.TaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Task
+   */
+  omit?: Prisma.TaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaskInclude<ExtArgs> | null
+  where?: Prisma.TaskWhereInput
+  orderBy?: Prisma.TaskOrderByWithRelationInput | Prisma.TaskOrderByWithRelationInput[]
+  cursor?: Prisma.TaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[]
 }
 
 /**
