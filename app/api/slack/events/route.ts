@@ -88,6 +88,37 @@ export async function POST(req: NextRequest) {
   if (payload.type !== "event_callback") return NextResponse.json({ ok: true })
 
   const event = payload.event
+
+  // Helper : notifier l'auteur d'un message #1-standup à partir de son texte
+  async function notifyAuthorOfMessage(originalText: string | undefined, fromSlackUserId: string, action: string) {
+    const nameMatch = originalText?.match(/\*(.+?)\*/)
+    if (!nameMatch) return
+    const targetUser = await prisma.user.findFirst({
+      where: { name: nameMatch[1], slackUserId: { not: null } },
+    })
+    if (!targetUser || targetUser.slackUserId === fromSlackUserId) return
+    const commenter = await prisma.user.findFirst({ where: { slackUserId: fromSlackUserId } })
+    const commenterName = commenter?.name ?? "Quelqu'un"
+    const openRes = await slackPost("conversations.open", { users: targetUser.slackUserId })
+    const dmChannel = openRes.channel?.id
+    if (dmChannel) {
+      await sendDM(dmChannel, `💬 *${commenterName}* ${action} ta météo dans <#C02GDFCA6G7> !`)
+    }
+  }
+
+  // ── Réaction emoji sur un message #1-standup → notifier l'auteur ──────────
+  if (event.type === "reaction_added" && event.item?.channel === "C02GDFCA6G7") {
+    const historyRes = await slackPost("conversations.history", {
+      channel: "C02GDFCA6G7",
+      latest: event.item.ts,
+      limit: 1,
+      inclusive: true,
+    })
+    const originalMsg = historyRes.messages?.[0]
+    await notifyAuthorOfMessage(originalMsg?.text, event.user, `a réagi avec :${event.reaction}: à`)
+    return NextResponse.json({ ok: true })
+  }
+
   if (event.type !== "message" || event.bot_id) {
     return NextResponse.json({ ok: true })
   }
@@ -101,23 +132,7 @@ export async function POST(req: NextRequest) {
       inclusive: true,
     })
     const originalMsg = repliesRes.messages?.[0]
-    const nameMatch   = originalMsg?.text?.match(/\*(.+?)\*/)
-    if (nameMatch) {
-      const targetUser = await prisma.user.findFirst({
-        where: { name: nameMatch[1], slackUserId: { not: null } },
-      })
-      if (targetUser && targetUser.slackUserId !== event.user) {
-        const commenter = await prisma.user.findFirst({ where: { slackUserId: event.user } })
-        const commenterName = commenter?.name ?? "Quelqu'un"
-        const openRes = await slackPost("conversations.open", { users: targetUser.slackUserId })
-        const dmChannel = openRes.channel?.id
-        if (dmChannel) {
-          await sendDM(dmChannel,
-            `💬 *${commenterName}* a commenté ta météo dans <#C02GDFCA6G7> :\n_"${event.text}"_`
-          )
-        }
-      }
-    }
+    await notifyAuthorOfMessage(originalMsg?.text, event.user, `a commenté ("${event.text}")`)
     return NextResponse.json({ ok: true })
   }
 
