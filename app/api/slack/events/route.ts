@@ -80,6 +80,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ challenge: payload.challenge })
   }
 
+  // Ignorer les retries Slack (timeout 3s dépassé côté serveur → éviter les doublons)
+  if (req.headers.get("x-slack-retry-num")) {
+    return NextResponse.json({ ok: true })
+  }
+
   if (payload.type !== "event_callback") return NextResponse.json({ ok: true })
 
   const event = payload.event
