@@ -89,18 +89,24 @@ export async function POST(req: NextRequest) {
 
   const event = payload.event
 
+  console.log("[slack-event]", JSON.stringify({ type: event.type, channel: event.channel, channel_type: event.channel_type, bot_id: event.bot_id, thread_ts: event.thread_ts, ts: event.ts, item: event.item }))
+
   // Helper : notifier l'auteur d'un message #1-standup à partir de son texte
   async function notifyAuthorOfMessage(originalText: string | undefined, fromSlackUserId: string, action: string) {
+    console.log("[notify] originalText:", originalText, "from:", fromSlackUserId)
     const nameMatch = originalText?.match(/\*(.+?)\*/)
-    if (!nameMatch) return
+    if (!nameMatch) { console.log("[notify] regex no match"); return }
+    console.log("[notify] name extracted:", nameMatch[1])
     const targetUser = await prisma.user.findFirst({
       where: { name: nameMatch[1], slackUserId: { not: null } },
     })
-    if (!targetUser || targetUser.slackUserId === fromSlackUserId) return
+    if (!targetUser) { console.log("[notify] user not found in DB for name:", nameMatch[1]); return }
+    if (targetUser.slackUserId === fromSlackUserId) { console.log("[notify] same user, skip"); return }
     const commenter = await prisma.user.findFirst({ where: { slackUserId: fromSlackUserId } })
     const commenterName = commenter?.name ?? "Quelqu'un"
     const openRes = await slackPost("conversations.open", { users: targetUser.slackUserId })
     const dmChannel = openRes.channel?.id
+    console.log("[notify] sending DM to channel:", dmChannel)
     if (dmChannel) {
       await sendDM(dmChannel, `💬 *${commenterName}* ${action} ta météo dans <#C02GDFCA6G7> !`)
     }
@@ -108,31 +114,35 @@ export async function POST(req: NextRequest) {
 
   // ── Réaction emoji sur un message #1-standup → notifier l'auteur ──────────
   if (event.type === "reaction_added" && event.item?.channel === "C02GDFCA6G7") {
+    console.log("[reaction] fetching history for ts:", event.item.ts)
     const historyRes = await slackPost("conversations.history", {
       channel: "C02GDFCA6G7",
       latest: event.item.ts,
       limit: 1,
       inclusive: true,
     })
+    console.log("[reaction] history ok:", historyRes.ok, "messages:", historyRes.messages?.length)
     const originalMsg = historyRes.messages?.[0]
     await notifyAuthorOfMessage(originalMsg?.text, event.user, `a réagi avec :${event.reaction}: à`)
     return NextResponse.json({ ok: true })
   }
 
-  if (event.type !== "message" || event.bot_id) {
-    return NextResponse.json({ ok: true })
-  }
-
   // ── Thread reply dans #1-standup → notifier l'auteur de la météo ──────────
   if (event.channel === "C02GDFCA6G7" && event.thread_ts && event.thread_ts !== event.ts) {
+    console.log("[thread-reply] bot_id:", event.bot_id, "fetching replies for ts:", event.thread_ts)
     const repliesRes = await slackPost("conversations.replies", {
       channel: "C02GDFCA6G7",
       ts: event.thread_ts,
       limit: 1,
       inclusive: true,
     })
+    console.log("[thread-reply] replies ok:", repliesRes.ok, "messages:", repliesRes.messages?.length)
     const originalMsg = repliesRes.messages?.[0]
     await notifyAuthorOfMessage(originalMsg?.text, event.user, `a commenté ("${event.text}")`)
+    return NextResponse.json({ ok: true })
+  }
+
+  if (event.type !== "message" || event.bot_id) {
     return NextResponse.json({ ok: true })
   }
 
