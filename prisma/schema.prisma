@@ -66,6 +66,7 @@ model Meteo {
   blockerAudience  Audience  @default(TEAM)
   weekSummary      String?
   weekHighlight    String?
+  slackMsgTs       String?
   createdAt        DateTime  @default(now())
 
   user   User    @relation(fields: [userId], references: [id])

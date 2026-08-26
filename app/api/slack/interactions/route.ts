@@ -266,17 +266,23 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    // Post canal Slack si partagé équipe
-    const webhookUrl = process.env.SLACK_WEBHOOK_URL
-    if (webhookUrl) {
+    // Post canal Slack et stocker le TS pour les notifications de thread
+    const botToken = process.env.SLACK_BOT_TOKEN
+    if (botToken) {
       const lines = [`*${user.name}* — ${MOOD_LABELS[mood]}`]
       if (contextText && contextAudience === "TEAM") lines.push(`> ${contextText}`)
       if (blockerText  && blockerAudience === "TEAM") lines.push(`> 🚧 ${blockerText}`)
-      await fetch(webhookUrl, {
+      const postRes = await fetch("https://slack.com/api/chat.postMessage", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: lines.join("\n") }),
-      }).catch(() => {})
+        headers: { Authorization: `Bearer ${botToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ channel: "C02GDFCA6G7", text: lines.join("\n") }),
+      }).then(r => r.json()).catch(() => ({ ok: false }))
+      if (postRes.ok && postRes.ts) {
+        await prisma.meteo.update({
+          where: { id: (await prisma.meteo.findFirst({ where: { userId: user.id }, orderBy: { createdAt: "desc" } }))!.id },
+          data: { slackMsgTs: postRes.ts },
+        })
+      }
     }
 
     // DM aux leads si contenu partagé en "Lead"
