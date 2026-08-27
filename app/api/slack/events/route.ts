@@ -219,7 +219,22 @@ export async function POST(req: NextRequest) {
   const text = event.text?.trim()
   if (!text || event.subtype) return NextResponse.json({ ok: true })
 
-  const user = await prisma.user.findFirst({ where: { slackUserId } })
+  let user = await prisma.user.findFirst({ where: { slackUserId } })
+
+  // ── Nouveau sur Slack : liaison du compte ────────────────────────────────
+  if (!user) {
+    const matched = await prisma.user.findFirst({
+      where: { name: { equals: text, mode: "insensitive" }, slackUserId: null },
+    })
+    if (matched) {
+      await prisma.user.update({ where: { id: matched.id }, data: { slackUserId } })
+      await sendDM(channel, `✅ Compte lié ! Bienvenue *${matched.name}* 👋\nTu recevras ta météo chaque matin ici.`)
+    } else {
+      await sendDM(channel, `👋 Bienvenue sur Pulse Collectif !\nQuel est ton prénom ? _(tel qu'il apparaît dans l'app)_`)
+    }
+    return NextResponse.json({ ok: true })
+  }
+
   if (!user?.slackConvState) return NextResponse.json({ ok: true })
 
   const state = JSON.parse(user.slackConvState)
